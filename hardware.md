@@ -1,4 +1,4 @@
-#Hardware
+# Hardware
 
 ##PUC vs Raspberry Pi
 
