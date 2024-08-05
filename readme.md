@@ -2,7 +2,7 @@ Birdweather Exhibit is a Flutter app used to display a live feed of the bird spe
 
 This app is designed to work with the BirdWeather PUC recording system and BirdWeather API. 
 
-For information on the hardware needed to set up a live feed, see Hardware.
+For information on the hardware needed to set up a live feed, see [Hardware](https://github.com/jessicatir/birdweather-exhibit/blob/main/hardware.md#hardware).
 
 For information on installing and using the app, see Installation Guide.
 
