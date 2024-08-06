@@ -1,0 +1,47 @@
+query TopBirdWeatherSpecies(
+  $ne: InputLocation
+  $sw: InputLocation
+  $period: InputDuration
+  $stationTypes: [String!]
+  $stationIds: [ID!]
+  $offset: Int
+  $limit: Int
+) {
+  species: topSpecies(
+    limit: $limit
+    offset: $offset
+    period: $period
+    ne: $ne
+    sw: $sw
+    stationTypes: $stationTypes
+    stationIds: $stationIds
+  ) {
+    speciesId
+    species {
+      id
+      scientificName
+      commonName
+      thumbnailUrl
+      imageUrl
+      birdweatherUrl
+      ebirdUrl
+      wikipediaUrl
+      wikipediaSummary
+      color
+      imageCredit
+      imageLicense
+      imageLicenseUrl
+      __typename
+    }
+    count
+    breakdown {
+      unlikely
+      uncertain
+      veryLikely
+      almostCertain
+      __typename
+    }
+    averageProbability
+    __typename
+  }
+}
