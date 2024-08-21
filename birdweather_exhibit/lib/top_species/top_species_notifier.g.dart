@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'api_providers.dart';
+part of 'top_species_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$birdWeatherGraphQLClientHash() =>
-    r'60aa980bbdd525018fe06582c6ed08933fb1e600';
+String _$topSpeciesNotifierHash() =>
+    r'90fb286d2beb1eff10960283ce8b649697bdb17a';
 
-/// See also [birdWeatherGraphQLClient].
-@ProviderFor(birdWeatherGraphQLClient)
-final birdWeatherGraphQLClientProvider =
-    AutoDisposeProvider<GraphQLClient>.internal(
-  birdWeatherGraphQLClient,
-  name: r'birdWeatherGraphQLClientProvider',
+/// See also [TopSpeciesNotifier].
+@ProviderFor(TopSpeciesNotifier)
+final topSpeciesNotifierProvider = AutoDisposeAsyncNotifierProvider<
+    TopSpeciesNotifier, TopSpeciesState>.internal(
+  TopSpeciesNotifier.new,
+  name: r'topSpeciesNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$birdWeatherGraphQLClientHash,
+      : _$topSpeciesNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef BirdWeatherGraphQLClientRef = AutoDisposeProviderRef<GraphQLClient>;
+typedef _$TopSpeciesNotifier = AutoDisposeAsyncNotifier<TopSpeciesState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
