@@ -1,0 +1,22 @@
+query StationSensors($stationId: ID!) {
+  sensorData: station(id: $stationId) {
+    sensors {
+      environment {
+        timestamp
+        temperature
+        humidity
+        barometricPressure
+        aqi
+        soundPressureLevel
+        __typename
+      }
+      light {
+        clear
+        nir
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

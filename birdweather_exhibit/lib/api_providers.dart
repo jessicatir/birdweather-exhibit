@@ -5,8 +5,17 @@ part 'api_providers.g.dart';
 
 @riverpod
 GraphQLClient birdWeatherGraphQLClient(BirdWeatherGraphQLClientRef ref) {
+  final Link link = Link.split(
+    (request) => request.isSubscription,
+    WebSocketLink(
+      "wss://app.birdweather.com/graphql",
+    ),
+    HttpLink(
+      "https://app.birdweather.com/graphql",
+    ),
+  );
   return GraphQLClient(
-    link: HttpLink("https://app.birdweather.com/graphql"),
+    link: link,
     cache: GraphQLCache(),
   );
 }

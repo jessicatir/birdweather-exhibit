@@ -1,6 +1,6 @@
-import 'package:birdweather_exhibit/top_species/top_species_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import "package:birdweather_exhibit/species_breakdown/species_breakdown_screen.dart";
+import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
 void main() {
   runApp(const ProviderScope(
@@ -14,12 +14,20 @@ class ExhibitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: "CRCM Exhibit",
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //primaryColor: const Color(0xFFA60F2D),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFA60F2D),
+        ),
         useMaterial3: true,
       ),
-      home: const TopSpeciesScreen(title: 'Home Page'),
+      home: const SpeciesBreakdownScreen(),
     );
   }
 }
+
+//#5F1222
+//#40000B
+//#410001
+//#A60F2D
