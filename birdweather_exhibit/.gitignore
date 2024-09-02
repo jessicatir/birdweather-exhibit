@@ -3,7 +3,7 @@
 *.log
 *.pyc
 *.swp
-.DS_Store
+*.DS_Store
 .atom/
 .buildlog/
 .history
@@ -29,7 +29,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-# /build/
+/build/
 
 # Symbolication related
 app.*.symbols
