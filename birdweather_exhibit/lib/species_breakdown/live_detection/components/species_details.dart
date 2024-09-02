@@ -14,21 +14,22 @@ class SpeciesDetails extends StatelessWidget {
     final removedParentheses = paragraph
         .replaceAll(RegExp(r"\(.*?\)"), "")
         .replaceAll(RegExp(r"\s+"), " ");
-    final sentences = removedParentheses.split(". ");
+    //final sentences = removedParentheses.split(". ");
+    final sentences = removedParentheses.split(RegExp(r"(?<=\.) "));
 
     String result = "";
     int currentLength = 0;
 
     for (String sentence in sentences) {
       final trimmedSentence = sentence.trim();
-      final sentenceLength = sentence.length;
+      final sentenceLength = trimmedSentence.length;
 
       if (currentLength + sentenceLength + 1 <= 300) {
-        result += "$trimmedSentence. ";
+        result += "$trimmedSentence ";
         currentLength += sentenceLength + 1;
       } else {
         if (result.isEmpty) {
-          result = "$trimmedSentence. ";
+          result = "$trimmedSentence ";
         }
         break;
       }
