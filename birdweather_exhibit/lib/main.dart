@@ -15,6 +15,7 @@ class ExhibitApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "CRCM Exhibit",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         //primaryColor: const Color(0xFFA60F2D),
         colorScheme: ColorScheme.fromSeed(
@@ -26,8 +27,3 @@ class ExhibitApp extends StatelessWidget {
     );
   }
 }
-
-//#5F1222
-//#40000B
-//#410001
-//#A60F2D

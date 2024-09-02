@@ -1,4 +1,4 @@
-import "package:birdweather_exhibit/species_breakdown/live_detection/components/status_indicator.dart";
+import "package:birdweather_exhibit/species_breakdown/live_detection/components/live_detection_status_indicator.dart";
 import "package:birdweather_exhibit/species_breakdown/live_detection/live_detection_notifier.dart";
 import "package:birdweather_exhibit/species_breakdown/live_detection/views/live_detection_loaded.dart";
 import "package:flutter/material.dart";
@@ -24,7 +24,7 @@ class LiveDetectionSection extends ConsumerWidget {
               ),
               overflow: TextOverflow.ellipsis,
             ),
-            const StatusIndicator(),
+            const LiveDetectionStatusIndicator(),
             liveDetectionState.map(
                 data: (data) {
                   final state = data.value;

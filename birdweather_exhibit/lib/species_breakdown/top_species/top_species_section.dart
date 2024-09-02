@@ -1,48 +1,69 @@
-import "dart:convert";
-
-import "package:birdweather_exhibit/services/bird_weather_service.dart";
 import "package:birdweather_exhibit/species_breakdown/top_species/views/top_species_loaded.dart";
 import "package:birdweather_exhibit/species_breakdown/top_species/top_species_notifier.dart";
-import "package:carousel_slider/carousel_slider.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:flutter/material.dart";
 
 class TopSpeciesSection extends ConsumerStatefulWidget {
-  const TopSpeciesSection({super.key, required this.title});
-
-  final String title;
+  const TopSpeciesSection({
+    super.key,
+  });
 
   @override
   ConsumerState<TopSpeciesSection> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends ConsumerState<TopSpeciesSection> {
-  var data = "";
-
   @override
   Widget build(BuildContext context) {
     final topSpeciesState = ref.watch(topSpeciesNotifierProvider);
-    return topSpeciesState.map(
-        data: (data) {
-          final state = data.value;
-          final topSpecies = state.topSpecies!;
-          final String prettyString =
-              const JsonEncoder.withIndent("  ").convert(topSpecies.toJson());
-          final double height = MediaQuery.of(context).size.height;
-          return TopSpeciesLoaded(
-            topSpecies: topSpecies,
-          );
-        },
-        error: (error) {
-          return const Center(child: Text("error occured"));
-        },
-        loading: (loading) => const Center(child: CircularProgressIndicator()));
-    // floatingActionButton: FloatingActionButton(
-    //   onPressed: () {
-    //     ref.invalidate(topSpeciesNotifierProvider);
-    //   },
-    //   tooltip: "Refresh",
-    //   child: const Icon(Icons.add),
-    // ),
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        children: [
+          // Image.asset(
+          //   "assets/images/pullman-neighborhood.jpg",
+          //   fit: BoxFit.fill,
+          //   height: 250,
+          // ),
+          const Text(
+            "Top Detections",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            "Past 24 Hours",
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: 18.0,
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          topSpeciesState.map(
+            data: (data) {
+              final state = data.value;
+              final topSpecies = state.topSpecies!;
+              final lastUpdated = state.lastUpdated;
+              return TopSpeciesLoaded(
+                topSpecies: topSpecies,
+                lastUpdated: lastUpdated,
+              );
+            },
+            error: (error) {
+              return const Center(
+                child: Text("error occured"),
+              );
+            },
+            loading: (loading) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

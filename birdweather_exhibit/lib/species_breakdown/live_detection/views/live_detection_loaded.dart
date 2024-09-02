@@ -27,8 +27,11 @@ class LiveDetectionLoaded extends StatelessWidget {
             isLive: state.isLive,
           ),
           const SizedBox(height: 16.0),
-          SpeciesDetails(
-            wikipediaSummary: newDetection.species.wikipediaSummary!,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: SpeciesDetails(
+              wikipediaSummary: newDetection.species.wikipediaSummary!,
+            ),
           ),
         ],
       ),

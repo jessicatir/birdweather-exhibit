@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$TopSpeciesState {
   Query$TopBirdWeatherSpecies? get topSpecies =>
       throw _privateConstructorUsedError;
+  DateTime? get lastUpdated => throw _privateConstructorUsedError;
+  Query$StationSensors? get sensorData => throw _privateConstructorUsedError;
   dynamic get isUpdating => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -31,7 +33,11 @@ abstract class $TopSpeciesStateCopyWith<$Res> {
           TopSpeciesState value, $Res Function(TopSpeciesState) then) =
       _$TopSpeciesStateCopyWithImpl<$Res, TopSpeciesState>;
   @useResult
-  $Res call({Query$TopBirdWeatherSpecies? topSpecies, dynamic isUpdating});
+  $Res call(
+      {Query$TopBirdWeatherSpecies? topSpecies,
+      DateTime? lastUpdated,
+      Query$StationSensors? sensorData,
+      dynamic isUpdating});
 }
 
 /// @nodoc
@@ -48,6 +54,8 @@ class _$TopSpeciesStateCopyWithImpl<$Res, $Val extends TopSpeciesState>
   @override
   $Res call({
     Object? topSpecies = freezed,
+    Object? lastUpdated = freezed,
+    Object? sensorData = freezed,
     Object? isUpdating = freezed,
   }) {
     return _then(_value.copyWith(
@@ -55,6 +63,14 @@ class _$TopSpeciesStateCopyWithImpl<$Res, $Val extends TopSpeciesState>
           ? _value.topSpecies
           : topSpecies // ignore: cast_nullable_to_non_nullable
               as Query$TopBirdWeatherSpecies?,
+      lastUpdated: freezed == lastUpdated
+          ? _value.lastUpdated
+          : lastUpdated // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      sensorData: freezed == sensorData
+          ? _value.sensorData
+          : sensorData // ignore: cast_nullable_to_non_nullable
+              as Query$StationSensors?,
       isUpdating: freezed == isUpdating
           ? _value.isUpdating
           : isUpdating // ignore: cast_nullable_to_non_nullable
@@ -72,7 +88,11 @@ abstract class _$$TopSpeciesLoadedStateImplCopyWith<$Res>
       __$$TopSpeciesLoadedStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Query$TopBirdWeatherSpecies? topSpecies, dynamic isUpdating});
+  $Res call(
+      {Query$TopBirdWeatherSpecies? topSpecies,
+      DateTime? lastUpdated,
+      Query$StationSensors? sensorData,
+      dynamic isUpdating});
 }
 
 /// @nodoc
@@ -87,6 +107,8 @@ class __$$TopSpeciesLoadedStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? topSpecies = freezed,
+    Object? lastUpdated = freezed,
+    Object? sensorData = freezed,
     Object? isUpdating = freezed,
   }) {
     return _then(_$TopSpeciesLoadedStateImpl(
@@ -94,6 +116,14 @@ class __$$TopSpeciesLoadedStateImplCopyWithImpl<$Res>
           ? _value.topSpecies
           : topSpecies // ignore: cast_nullable_to_non_nullable
               as Query$TopBirdWeatherSpecies?,
+      lastUpdated: freezed == lastUpdated
+          ? _value.lastUpdated
+          : lastUpdated // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      sensorData: freezed == sensorData
+          ? _value.sensorData
+          : sensorData // ignore: cast_nullable_to_non_nullable
+              as Query$StationSensors?,
       isUpdating: freezed == isUpdating ? _value.isUpdating! : isUpdating,
     ));
   }
@@ -102,18 +132,26 @@ class __$$TopSpeciesLoadedStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TopSpeciesLoadedStateImpl extends TopSpeciesLoadedState {
-  const _$TopSpeciesLoadedStateImpl({this.topSpecies, this.isUpdating = false})
+  const _$TopSpeciesLoadedStateImpl(
+      {this.topSpecies,
+      this.lastUpdated,
+      this.sensorData,
+      this.isUpdating = false})
       : super._();
 
   @override
   final Query$TopBirdWeatherSpecies? topSpecies;
+  @override
+  final DateTime? lastUpdated;
+  @override
+  final Query$StationSensors? sensorData;
   @override
   @JsonKey()
   final dynamic isUpdating;
 
   @override
   String toString() {
-    return 'TopSpeciesState(topSpecies: $topSpecies, isUpdating: $isUpdating)';
+    return 'TopSpeciesState(topSpecies: $topSpecies, lastUpdated: $lastUpdated, sensorData: $sensorData, isUpdating: $isUpdating)';
   }
 
   @override
@@ -123,13 +161,17 @@ class _$TopSpeciesLoadedStateImpl extends TopSpeciesLoadedState {
             other is _$TopSpeciesLoadedStateImpl &&
             (identical(other.topSpecies, topSpecies) ||
                 other.topSpecies == topSpecies) &&
+            (identical(other.lastUpdated, lastUpdated) ||
+                other.lastUpdated == lastUpdated) &&
+            (identical(other.sensorData, sensorData) ||
+                other.sensorData == sensorData) &&
             const DeepCollectionEquality()
                 .equals(other.isUpdating, isUpdating));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, topSpecies, const DeepCollectionEquality().hash(isUpdating));
+  int get hashCode => Object.hash(runtimeType, topSpecies, lastUpdated,
+      sensorData, const DeepCollectionEquality().hash(isUpdating));
 
   @JsonKey(ignore: true)
   @override
@@ -142,11 +184,17 @@ class _$TopSpeciesLoadedStateImpl extends TopSpeciesLoadedState {
 abstract class TopSpeciesLoadedState extends TopSpeciesState {
   const factory TopSpeciesLoadedState(
       {final Query$TopBirdWeatherSpecies? topSpecies,
+      final DateTime? lastUpdated,
+      final Query$StationSensors? sensorData,
       final dynamic isUpdating}) = _$TopSpeciesLoadedStateImpl;
   const TopSpeciesLoadedState._() : super._();
 
   @override
   Query$TopBirdWeatherSpecies? get topSpecies;
+  @override
+  DateTime? get lastUpdated;
+  @override
+  Query$StationSensors? get sensorData;
   @override
   dynamic get isUpdating;
   @override

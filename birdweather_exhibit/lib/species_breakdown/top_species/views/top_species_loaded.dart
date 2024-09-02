@@ -1,34 +1,41 @@
 import "package:birdweather_exhibit/graphql/topBirdWeatherSpecies.graphql.dart";
-import "package:birdweather_exhibit/species_breakdown/top_species/components/bird_tile.dart";
+import "package:birdweather_exhibit/species_breakdown/top_species/components/auto_scrolling_detection_list.dart";
 import "package:flutter/material.dart";
+import "package:intl/intl.dart";
 
 class TopSpeciesLoaded extends StatelessWidget {
   const TopSpeciesLoaded({
-    super.key,
     required this.topSpecies,
+    required this.lastUpdated,
+    super.key,
   });
 
   final Query$TopBirdWeatherSpecies topSpecies;
+  final DateTime? lastUpdated;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: topSpecies.species.length,
-        itemBuilder: (BuildContext context, int index) {
-          final imageUrl = topSpecies.species[index].species!.thumbnailUrl!;
-          final commonName = topSpecies.species[index].species!.commonName;
-          final scientificName =
-              topSpecies.species[index].species!.scientificName!;
-          final detectionCount = topSpecies.species[index].count;
-          final borderColor = topSpecies.species[index].species!.color;
-
-          return BirdTile(
-            imageUrl: imageUrl,
-            commonName: commonName,
-            scientificName: scientificName,
-            detectionCount: detectionCount,
-            borderColor: borderColor,
-          );
-        });
+    return Expanded(
+      child: Column(
+        children: [
+          if (lastUpdated != null)
+            Text(
+              "Last updated at ${DateFormat.jm().format(lastUpdated!).toString()}",
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: 18.0,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          Expanded(
+            child: AutoScrollingSpeciesDetectionList(
+              topSpecies: topSpecies,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

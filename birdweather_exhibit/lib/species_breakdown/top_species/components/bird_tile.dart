@@ -2,12 +2,12 @@ import "package:flutter/material.dart";
 
 class BirdTile extends StatelessWidget {
   const BirdTile({
-    super.key,
     required this.imageUrl,
     required this.commonName,
     required this.scientificName,
     required this.detectionCount,
     required this.borderColor,
+    super.key,
   });
 
   final String imageUrl;
@@ -27,64 +27,62 @@ class BirdTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(2),
       child: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: 500,
           ),
-          child: Container(
-            padding: EdgeInsets.all(8.0),
-            // decoration: BoxDecoration(
-            //   border: Border.all(
-            //       color: hexToColor(
-            //         borderColor,
-            //       ),
-            //       width: 3.0),
-            //   borderRadius: BorderRadius.circular(12.0),
-            // ),
-            child: Row(
-              children: [
-                // Image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    imageUrl,
-                    width: 50.0,
-                    height: 50.0,
-                    fit: BoxFit.cover,
+          child: Card(
+            elevation: 4,
+            surfaceTintColor: Colors.transparent,
+            color: Theme.of(context).colorScheme.tertiaryContainer,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      imageUrl,
+                      width: 60.0,
+                      height: 60.0,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        commonName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          commonName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
                         ),
-                      ),
-                      Text(
-                        scientificName,
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 14.0,
+                        Text(
+                          scientificName,
+                          style: const TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         detectionCount.toString(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
+                          fontSize: 18.0,
                           color: Colors.green,
                         ),
                       ),
@@ -92,12 +90,13 @@ class BirdTile extends StatelessWidget {
                         "Detections",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
-                          //color: Colors.green,
+                          fontSize: 16.0,
                         ),
                       ),
-                    ]),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

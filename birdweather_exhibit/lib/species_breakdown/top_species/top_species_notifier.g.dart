@@ -7,7 +7,7 @@ part of 'top_species_notifier.dart';
 // **************************************************************************
 
 String _$topSpeciesNotifierHash() =>
-    r'2252d43cb60727b9a7c7dcd2792ba4e102624e95';
+    r'45378ee5e24fe6f968a031ea1839c36e652bf63d';
 
 /// See also [TopSpeciesNotifier].
 @ProviderFor(TopSpeciesNotifier)

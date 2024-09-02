@@ -1,37 +1,7 @@
 import "package:birdweather_exhibit/species_breakdown/live_detection/live_detection_section.dart";
+import "package:birdweather_exhibit/species_breakdown/location_data/location_data_section.dart";
 import "package:birdweather_exhibit/species_breakdown/top_species/top_species_section.dart";
 import "package:flutter/material.dart";
-
-// class SpeciesBreakdownScreen extends StatelessWidget {
-//   const SpeciesBreakdownScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Theme.of(context).colorScheme.primary,
-//         title: const Text("Species Breakdown"),
-//       ),
-//       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-//       body: Row(
-//         children: [
-//           Flexible(
-//             child: Center(
-//               child: TopSpeciesSection(
-//                 title: "title",
-//               ),
-//             ),
-//           ),
-//           Flexible(
-//             child: Center(
-//               child: LiveDetectionSection(),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class SpeciesBreakdownScreen extends StatelessWidget {
   const SpeciesBreakdownScreen({super.key});
@@ -41,7 +11,12 @@ class SpeciesBreakdownScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("Species Breakdown"),
+        title: Text(
+          "Live Demo",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
       ),
       backgroundColor: Colors.grey[400],
       body: Padding(
@@ -58,9 +33,7 @@ class SpeciesBreakdownScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: const Center(
-                    child: TopSpeciesSection(
-                      title: "title",
-                    ),
+                    child: TopSpeciesSection(),
                   ),
                 )),
             const SizedBox(
@@ -95,8 +68,8 @@ class SpeciesBreakdownScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
-                          child: Center(
-                            child: Container(),
+                          child: const Center(
+                            child: LocationDataSection(),
                           ),
                         )),
                   ],
