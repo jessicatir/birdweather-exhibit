@@ -85,6 +85,7 @@ class BirdTile extends StatelessWidget {
                           fontSize: 18.0,
                           color: Colors.green,
                         ),
+                        maxLines: 3,
                       ),
                       const Text(
                         "Detections",
@@ -92,6 +93,7 @@ class BirdTile extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 16.0,
                         ),
+                        maxLines: 3,
                       ),
                     ],
                   ),

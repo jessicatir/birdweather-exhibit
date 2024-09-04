@@ -4,11 +4,13 @@ class LocationDataPiece extends StatelessWidget {
   const LocationDataPiece({
     required this.label,
     required this.value,
+    required this.isSmallScreen,
     super.key,
   });
 
   final String label;
   final String value;
+  final bool isSmallScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class LocationDataPiece extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 16.0,
+            fontSize: isSmallScreen ? 14 : 16,
             color: Theme.of(context).colorScheme.outline,
           ),
           maxLines: 2,
@@ -26,9 +28,9 @@ class LocationDataPiece extends StatelessWidget {
         ),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 22.0,
+            fontSize: isSmallScreen ? 20 : 22,
           ),
           maxLines: 3,
           overflow: TextOverflow.ellipsis,

@@ -14,7 +14,6 @@ class SpeciesDetails extends StatelessWidget {
     final removedParentheses = paragraph
         .replaceAll(RegExp(r"\(.*?\)"), "")
         .replaceAll(RegExp(r"\s+"), " ");
-    //final sentences = removedParentheses.split(". ");
     final sentences = removedParentheses.split(RegExp(r"(?<=\.) "));
 
     String result = "";
@@ -42,12 +41,12 @@ class SpeciesDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       shortenSummary(wikipediaSummary),
-      minFontSize: 12,
+      minFontSize: 14,
       style: const TextStyle(
-        fontSize: 24.0,
+        fontSize: 22.0,
       ),
-      maxLines: 3,
-      //overflow: TextOverflow.ellipsis,
+      maxLines: 10,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
