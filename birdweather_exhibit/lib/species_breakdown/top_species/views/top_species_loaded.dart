@@ -1,5 +1,5 @@
 import "package:birdweather_exhibit/graphql/topBirdWeatherSpecies.graphql.dart";
-import "package:birdweather_exhibit/species_breakdown/top_species/components/auto_scrolling_detection_list.dart";
+import "package:birdweather_exhibit/species_breakdown/top_species/components/top_species_detection_list.dart";
 import "package:birdweather_exhibit/widgets/auto_scrolling_page.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";

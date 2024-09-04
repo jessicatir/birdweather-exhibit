@@ -13,6 +13,7 @@ class LocationDataSection extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: AutoScrollingPage(
+        autoScrollEnabled: false,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

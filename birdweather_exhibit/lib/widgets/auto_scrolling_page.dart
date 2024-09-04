@@ -4,19 +4,20 @@ class AutoScrollingPage extends StatefulWidget {
   const AutoScrollingPage({
     required this.child,
     this.scrollDuration = const Duration(seconds: 10),
+    this.autoScrollEnabled = true,
     super.key,
   });
 
   final Widget child;
   final Duration scrollDuration;
+  final bool autoScrollEnabled;
 
   @override
-  State<AutoScrollingPage> createState() =>
-      _AutoScrollingPageState();
+  State<AutoScrollingPage> createState() => _AutoScrollingPageState();
 }
 
-class _AutoScrollingPageState
-    extends State<AutoScrollingPage> with SingleTickerProviderStateMixin {
+class _AutoScrollingPageState extends State<AutoScrollingPage>
+    with SingleTickerProviderStateMixin {
   late ScrollController _scrollController;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -27,21 +28,23 @@ class _AutoScrollingPageState
 
     _scrollController = ScrollController();
 
-    _animationController = AnimationController(
-      vsync: this,
-      duration: widget.scrollDuration,
-    );
+    if (widget.autoScrollEnabled) {
+      _animationController = AnimationController(
+        vsync: this,
+        duration: widget.scrollDuration,
+      );
 
-    _animation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    )..addListener(() {
-        _scrollController.jumpTo(
-          _animation.value * _scrollController.position.maxScrollExtent,
-        );
-      });
+      _animation = CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      )..addListener(() {
+          _scrollController.jumpTo(
+            _animation.value * _scrollController.position.maxScrollExtent,
+          );
+        });
 
-    _startScrolling();
+      _startScrolling();
+    }
   }
 
   void _startScrolling() {
@@ -58,7 +61,9 @@ class _AutoScrollingPageState
 
   @override
   void dispose() {
-    _animationController.dispose();
+    if (widget.autoScrollEnabled) {
+      _animationController.dispose();
+    }
     _scrollController.dispose();
     super.dispose();
   }

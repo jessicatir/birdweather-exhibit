@@ -22,7 +22,7 @@ class SpeciesBreakdownScreen extends StatelessWidget {
       backgroundColor: Colors.grey[400],
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth < 800 || constraints.maxHeight < 600) {
+          if (constraints.maxWidth < 800 || constraints.maxHeight < 400) {
             return const Padding(
               padding: EdgeInsets.all(8.0),
               child: SingleChildScrollView(
