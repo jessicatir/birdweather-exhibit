@@ -17,7 +17,10 @@ class _MyHomePageState extends ConsumerState<TopSpeciesSection> {
   Widget build(BuildContext context) {
     final topSpeciesState = ref.watch(topSpeciesNotifierProvider);
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.symmetric(
+        vertical: 32,
+        horizontal: 8,
+      ),
       child: Column(
         children: [
           // Image.asset(

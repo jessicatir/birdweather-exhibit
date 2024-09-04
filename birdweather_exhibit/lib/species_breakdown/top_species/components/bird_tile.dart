@@ -64,6 +64,8 @@ class BirdTile extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 18.0,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           scientificName,
@@ -71,6 +73,8 @@ class BirdTile extends StatelessWidget {
                             fontStyle: FontStyle.italic,
                             fontSize: 16.0,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
