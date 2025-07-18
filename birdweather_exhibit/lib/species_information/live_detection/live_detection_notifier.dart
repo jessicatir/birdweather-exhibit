@@ -2,7 +2,7 @@ import "dart:async";
 
 import "package:birdweather_exhibit/graphql/mobileDetections.graphql.dart";
 import "package:birdweather_exhibit/services/bird_weather_service.dart";
-import "package:birdweather_exhibit/species_breakdown/live_detection/live_detection_state.dart";
+import "package:birdweather_exhibit/species_information/live_detection/live_detection_state.dart";
 import "package:birdweather_exhibit/utils/utils.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 

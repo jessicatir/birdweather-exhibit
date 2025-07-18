@@ -1,11 +1,11 @@
-import "package:birdweather_exhibit/species_breakdown/components/immersive_background.dart";
-import "package:birdweather_exhibit/species_breakdown/location_data/location_data.dart";
-import "package:birdweather_exhibit/species_breakdown/live_detection/components/floating_recent_detection.dart";
-import "package:birdweather_exhibit/species_breakdown/top_species/components/compact_top_detections.dart";
+import "package:birdweather_exhibit/species_information/components/immersive_background.dart";
+import "package:birdweather_exhibit/species_information/location_data/location_data.dart";
+import "package:birdweather_exhibit/species_information/live_detection/recent_detections.dart";
+import "package:birdweather_exhibit/species_information/top_species/components/compact_top_detections.dart";
 import "package:flutter/material.dart";
 
-class SpeciesBreakdownScreen extends StatelessWidget {
-  const SpeciesBreakdownScreen({super.key});
+class MainSpeciesInformationScreen extends StatelessWidget {
+  const MainSpeciesInformationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class SpeciesBreakdownScreen extends StatelessWidget {
               ),
 
               // Recent detection card will be positioned randomly
-              const FloatingRecentDetection(),
+              const RecentDetections(),
             ],
           );
         },

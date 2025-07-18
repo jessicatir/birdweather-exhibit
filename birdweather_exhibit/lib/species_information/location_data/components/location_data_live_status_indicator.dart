@@ -1,4 +1,4 @@
-import "package:birdweather_exhibit/species_breakdown/top_species/top_species_notifier.dart";
+import "package:birdweather_exhibit/species_information/top_species/top_species_notifier.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";

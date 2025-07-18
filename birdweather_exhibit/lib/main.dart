@@ -1,4 +1,4 @@
-import "package:birdweather_exhibit/species_breakdown/species_breakdown_screen.dart";
+import "package:birdweather_exhibit/species_information/main_species_information_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
@@ -23,7 +23,7 @@ class ExhibitApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const SpeciesBreakdownScreen(),
+      home: const MainSpeciesInformationScreen(),
     );
   }
 }

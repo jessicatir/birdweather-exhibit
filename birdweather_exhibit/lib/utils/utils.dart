@@ -35,7 +35,7 @@ Color getAqiColor(double aqi) {
   } else if (aqiValue <= 100) {
     return const Color(0xFFFFFF00); // Moderate - Yellow
   } else if (aqiValue <= 150) {
-    return const Color(0xFFFF7E00); // Unhealthy for Sensitive Groups - Orange
+    return const Color(0xFFFF7E00); // Poor - Orange
   } else if (aqiValue <= 200) {
     return const Color(0xFFFF0000); // Unhealthy - Red
   } else if (aqiValue <= 300) {

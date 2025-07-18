@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:birdweather_exhibit/services/bird_weather_service.dart";
-import "package:birdweather_exhibit/species_breakdown/top_species/top_species_state.dart";
+import "package:birdweather_exhibit/species_information/top_species/top_species_state.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "top_species_notifier.g.dart";
