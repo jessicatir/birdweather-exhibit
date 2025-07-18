@@ -15,7 +15,6 @@ class TopSpeciesNotifier extends _$TopSpeciesNotifier {
     final birdWeatherService = ref.read(birdWeatherServiceProvider);
     final topSpecies = await birdWeatherService.getTopBirdWeatherSpecies();
     final sensorData = await birdWeatherService.getStationSensorData();
-    //final detectionData = await birdWeatherService.getDetectionData();
     final lastUpdated = DateTime.now();
     _autoUpdateTopDetections();
     return TopSpeciesState(

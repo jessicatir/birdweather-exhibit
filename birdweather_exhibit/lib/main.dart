@@ -1,10 +1,26 @@
+import "package:birdweather_exhibit/offline/hive_graphql_cache.dart";
 import "package:birdweather_exhibit/species_information/main_species_information_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
-void main() {
-  runApp(const ProviderScope(
-    child: ExhibitApp(),
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Create a container to initialize services
+  final container = ProviderContainer();
+
+  try {
+    // Initialize Hive cache
+    await container.read(hiveGraphQLCacheProvider).initialize();
+    debugPrint("Cache initialized successfully");
+  } catch (e) {
+    debugPrint("Cache initialization error: $e");
+    // Continue anyway - app should work without cache
+  }
+
+  runApp(UncontrolledProviderScope(
+    container: container,
+    child: const ExhibitApp(),
   ));
 }
 

@@ -1,3 +1,4 @@
+import "package:birdweather_exhibit/services/bird_weather_service.dart";
 import "package:birdweather_exhibit/species_information/top_species/top_species_notifier.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
@@ -9,9 +10,13 @@ class LocationDataLiveStatusIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final topSpeciesState = ref.watch(topSpeciesNotifierProvider);
+    final isDataFromCache = ref.watch(lastDataFromCacheProvider);
+
     return topSpeciesState
         .map(
-          data: (data) => const _LiveStatusIndicator(),
+          data: (data) => isDataFromCache
+              ? const _OfflineStatusIndicator()
+              : const _LiveStatusIndicator(),
           error: (error) => const _OfflineStatusIndicator(),
           loading: (loading) => const ConnectingStatusIndicator(),
         )

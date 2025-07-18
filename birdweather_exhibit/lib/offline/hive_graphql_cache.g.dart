@@ -1,27 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'api_providers.dart';
+part of 'hive_graphql_cache.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$birdWeatherGraphQLClientHash() =>
-    r'738e24c10b1ef11526b3b3ffc96621b8936adaf1';
+String _$hiveGraphQLCacheHash() => r'2b12e39798c5b359c324d5e9b77e1315a87fb3d3';
 
-/// See also [birdWeatherGraphQLClient].
-@ProviderFor(birdWeatherGraphQLClient)
-final birdWeatherGraphQLClientProvider =
-    AutoDisposeProvider<GraphQLClient>.internal(
-  birdWeatherGraphQLClient,
-  name: r'birdWeatherGraphQLClientProvider',
+/// See also [hiveGraphQLCache].
+@ProviderFor(hiveGraphQLCache)
+final hiveGraphQLCacheProvider = AutoDisposeProvider<HiveGraphQLCache>.internal(
+  hiveGraphQLCache,
+  name: r'hiveGraphQLCacheProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$birdWeatherGraphQLClientHash,
+      : _$hiveGraphQLCacheHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef BirdWeatherGraphQLClientRef = AutoDisposeProviderRef<GraphQLClient>;
+typedef HiveGraphQLCacheRef = AutoDisposeProviderRef<HiveGraphQLCache>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

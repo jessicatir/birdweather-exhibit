@@ -104,7 +104,7 @@ class DetectionCard extends StatelessWidget {
         child: BackdropFilter(
           filter: GlassmorphismTheme.backdropBlur,
           child: Container(
-            width: 480,
+            width: 500,
             padding: const EdgeInsets.all(16),
             decoration:
                 GlassmorphismTheme.getGlassmorphismDecoration(isLive: isLive),
@@ -224,13 +224,13 @@ class DetectionCard extends StatelessWidget {
                     child: AutoScrollingText(
                       text: description,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         color: Colors.white.withValues(alpha: 0.9),
                         height: 1.3,
                       ),
                       height:
                           100.0, // 5 complete lines: 14px * 1.3 line height * 5 lines = 91px
-                      scrollDuration: const Duration(seconds: 14),
+                      scrollDuration: const Duration(seconds: 18),
                       pauseDuration: const Duration(seconds: 3),
                     ),
                   ),

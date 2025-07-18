@@ -1,12 +1,19 @@
 import "package:birdweather_exhibit/api_providers.dart";
+import "package:birdweather_exhibit/cache/cache_config.dart";
 import "package:birdweather_exhibit/graphql/mobileDetections.graphql.dart";
 import "package:birdweather_exhibit/graphql/newDetection.graphql.dart";
 import "package:birdweather_exhibit/graphql/schema.graphql.dart";
 import "package:birdweather_exhibit/graphql/stationSensors.graphql.dart";
 import "package:birdweather_exhibit/graphql/topBirdWeatherSpecies.graphql.dart";
+import "package:birdweather_exhibit/offline/hive_graphql_cache.dart";
+import "package:flutter/foundation.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "bird_weather_service.g.dart";
+
+/// Simple provider to track if last data came from cache
+final lastDataFromCacheProvider = StateProvider<bool>((ref) => false);
 
 @riverpod
 BirdWeatherService birdWeatherService(BirdWeatherServiceRef ref) {
@@ -18,57 +25,148 @@ class BirdWeatherService {
 
   final BirdWeatherServiceRef ref;
 
+  HiveGraphQLCache get _cache => ref.read(hiveGraphQLCacheProvider);
+
   Future<Query$TopBirdWeatherSpecies> getTopBirdWeatherSpecies() async {
-    final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
-    final response = await birdWeatherApi.query$TopBirdWeatherSpecies(
-      Options$Query$TopBirdWeatherSpecies(
-        variables: Variables$Query$TopBirdWeatherSpecies(
-          period: Input$InputDuration(
-            count: 24,
-            unit: "hour",
+    final cacheKey = HiveGraphQLCache.topSpeciesKey("2354");
+
+    try {
+      final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
+      final response = await birdWeatherApi.query$TopBirdWeatherSpecies(
+        Options$Query$TopBirdWeatherSpecies(
+          variables: Variables$Query$TopBirdWeatherSpecies(
+            period: Input$InputDuration(count: 24, unit: "hour"),
+            limit: 10,
+            stationIds: ["2354"],
           ),
-          limit: 10,
-          stationIds: ["2354"],
         ),
-      ),
-    );
-    if (!response.hasException && response.parsedData != null) {
-      return response.parsedData!;
-    } else {
-      throw response.exception!;
+      );
+
+      if (!response.hasException && response.parsedData != null) {
+        // Mark that data came from network (not cache)
+        ref.read(lastDataFromCacheProvider.notifier).state = false;
+
+        // Cache successful response
+        await _cache.put(
+          cacheKey,
+          response.parsedData!.toJson(),
+          CacheConfig.topSpeciesTTL,
+        );
+        return response.parsedData!;
+      } else {
+        throw response.exception!;
+      }
+    } catch (e) {
+      // Check if this is a network/offline error
+      if (_isNetworkError(e)) {
+        debugPrint("Network error for top species, trying cache: $e");
+
+        final cachedData = await _cache.get(cacheKey);
+        if (cachedData != null) {
+          // Mark that data came from cache (offline)
+          ref.read(lastDataFromCacheProvider.notifier).state = true;
+
+          debugPrint("Serving top species from cache due to network failure");
+          return Query$TopBirdWeatherSpecies.fromJson(cachedData);
+        }
+
+        debugPrint("No cached top species data available");
+      }
+
+      // For all other errors or no cache available, rethrow
+      rethrow;
     }
   }
 
   Future<Query$StationSensors> getStationSensorData() async {
-    final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
-    final response = await birdWeatherApi.query$StationSensors(
-      Options$Query$StationSensors(
-        variables: Variables$Query$StationSensors(
-          stationId: "2354",
+    final cacheKey = HiveGraphQLCache.sensorDataKey("2354");
+
+    try {
+      final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
+      final response = await birdWeatherApi.query$StationSensors(
+        Options$Query$StationSensors(
+          variables: Variables$Query$StationSensors(stationId: "2354"),
         ),
-      ),
-    );
-    if (!response.hasException && response.parsedData != null) {
-      return response.parsedData!;
-    } else {
-      throw response.exception!;
+      );
+
+      if (!response.hasException && response.parsedData != null) {
+        // Mark that data came from network (not cache)
+        ref.read(lastDataFromCacheProvider.notifier).state = false;
+
+        // Cache successful response
+        await _cache.put(
+          cacheKey,
+          response.parsedData!.toJson(),
+          CacheConfig.sensorDataTTL,
+        );
+        return response.parsedData!;
+      } else {
+        throw response.exception!;
+      }
+    } catch (e) {
+      // Check if this is a network/offline error
+      if (_isNetworkError(e)) {
+        debugPrint("Network error for sensor data, trying cache: $e");
+
+        final cachedData = await _cache.get(cacheKey);
+        if (cachedData != null) {
+          // Mark that data came from cache (offline)
+          ref.read(lastDataFromCacheProvider.notifier).state = true;
+
+          debugPrint("Serving sensor data from cache due to network failure");
+          return Query$StationSensors.fromJson(cachedData);
+        }
+
+        debugPrint("No cached sensor data available");
+      }
+
+      // For all other errors or no cache available, rethrow
+      rethrow;
     }
   }
 
   Future<Query$MobileDetections> getDetectionData({int limit = 3}) async {
-    final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
-    final response = await birdWeatherApi.query$MobileDetections(
-      Options$Query$MobileDetections(
-        variables: Variables$Query$MobileDetections(
-          stationIds: ["2354"],
-          limit: limit,
+    final cacheKey = HiveGraphQLCache.detectionsKey("2354", limit);
+
+    try {
+      final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
+      final response = await birdWeatherApi.query$MobileDetections(
+        Options$Query$MobileDetections(
+          variables: Variables$Query$MobileDetections(
+            stationIds: ["2354"],
+            limit: limit,
+          ),
         ),
-      ),
-    );
-    if (!response.hasException && response.parsedData != null) {
-      return response.parsedData!;
-    } else {
-      throw response.exception!;
+      );
+
+      if (!response.hasException && response.parsedData != null) {
+        // Cache successful response with short TTL for live data
+        await _cache.put(
+          cacheKey,
+          response.parsedData!.toJson(),
+          CacheConfig.liveDetectionTTL,
+        );
+        return response.parsedData!;
+      } else {
+        throw response.exception!;
+      }
+    } catch (e) {
+      // Check if this is a network/offline error
+      if (_isNetworkError(e)) {
+        debugPrint("Network error for detection data, trying cache: $e");
+
+        final cachedData = await _cache.get(cacheKey);
+        if (cachedData != null) {
+          debugPrint(
+              "Serving detection data from cache due to network failure");
+          return Query$MobileDetections.fromJson(cachedData);
+        }
+
+        debugPrint("No cached detection data available");
+      }
+
+      // For all other errors or no cache available, rethrow
+      rethrow;
     }
   }
 
@@ -86,5 +184,34 @@ class BirdWeatherService {
         throw response.exception!;
       }
     });
+  }
+
+  /// Check if error is network-related (offline, timeout, connection issues)
+  bool _isNetworkError(dynamic error) {
+    final errorString = error.toString().toLowerCase();
+
+    // Check for common network error patterns
+    final hasNetworkKeywords = errorString.contains("network") ||
+        errorString.contains("connection") ||
+        errorString.contains("timeout") ||
+        errorString.contains("offline") ||
+        errorString.contains("socket") ||
+        errorString.contains("host") ||
+        errorString.contains("unreachable") ||
+        errorString.contains("failed to connect");
+
+    // Check for common network-related HTTP status codes
+    final hasNetworkStatusCodes = errorString.contains("502") || // Bad Gateway
+        errorString.contains("503") || // Service Unavailable
+        errorString.contains("504") || // Gateway Timeout
+        errorString.contains("408") || // Request Timeout
+        errorString.contains("429") || // Too Many Requests (rate limiting)
+        errorString.contains("520") || // Unknown Error (Cloudflare)
+        errorString.contains("521") || // Web Server Is Down (Cloudflare)
+        errorString.contains("522") || // Connection Timed Out (Cloudflare)
+        errorString.contains("523") || // Origin Is Unreachable (Cloudflare)
+        errorString.contains("524"); // A Timeout Occurred (Cloudflare)
+
+    return hasNetworkKeywords || hasNetworkStatusCodes;
   }
 }
