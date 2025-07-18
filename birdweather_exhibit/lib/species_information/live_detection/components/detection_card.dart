@@ -218,18 +218,20 @@ class DetectionCard extends StatelessWidget {
                 if (description.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(16),
                     decoration:
                         GlassmorphismTheme.getContentContainerDecoration(),
-                    child: Text(
-                      description,
+                    child: AutoScrollingText(
+                      text: description,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 14,
                         color: Colors.white.withValues(alpha: 0.9),
                         height: 1.3,
                       ),
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
+                      height:
+                          100.0, // 5 complete lines: 14px * 1.3 line height * 5 lines = 91px
+                      scrollDuration: const Duration(seconds: 14),
+                      pauseDuration: const Duration(seconds: 3),
                     ),
                   ),
                 ],
@@ -249,5 +251,218 @@ class DetectionCard extends StatelessWidget {
     final period = hour >= 12 ? "PM" : "AM";
     final displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour);
     return "$displayHour:$minute $period";
+  }
+}
+
+/// A widget that automatically scrolls text content when it overflows the container.
+///
+/// Key features:
+/// - Smooth forward scrolling with linear animation to prevent twitching
+/// - Fade out/in transition instead of reverse scrolling for seamless looping
+/// - Dynamic padding based on content length to prevent bounce-back on short text
+/// - Strict clamping to actual scroll extent to avoid overshooting
+class AutoScrollingText extends StatefulWidget {
+  final String text;
+  final TextStyle? style;
+  final double height;
+  final Duration scrollDuration;
+  final Duration pauseDuration;
+
+  const AutoScrollingText({
+    required this.text,
+    this.style,
+    this.height = 60.0,
+    this.scrollDuration = const Duration(seconds: 8),
+    this.pauseDuration = const Duration(seconds: 2),
+    super.key,
+  });
+
+  @override
+  State<AutoScrollingText> createState() => _AutoScrollingTextState();
+}
+
+class _AutoScrollingTextState extends State<AutoScrollingText>
+    with TickerProviderStateMixin {
+  late AnimationController _scrollController;
+  late AnimationController _fadeController;
+  late Animation<double> _scrollAnimation;
+  late Animation<double> _fadeAnimation;
+  late ScrollController _textScrollController;
+  bool _needsScrolling = false;
+  double _textHeight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _textScrollController = ScrollController();
+    _scrollController = AnimationController(
+      duration: widget.scrollDuration,
+      vsync: this,
+    );
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    _scrollAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.98, // Stop slightly before the end to prevent overshooting
+    ).animate(CurvedAnimation(
+      parent: _scrollController,
+      curve: Curves.linear,
+    ));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1.0,
+    ).animate(_fadeController);
+
+    _scrollAnimation.addListener(_handleScrollAnimation);
+
+    // Start with full opacity
+    _fadeController.value = 1.0;
+
+    // Check if scrolling is needed after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted) {
+          _checkIfScrollingNeeded();
+        }
+      });
+    });
+  }
+
+  void _checkIfScrollingNeeded() {
+    if (!mounted) return;
+
+    // Calculate text height
+    final textPainter = TextPainter(
+      text: TextSpan(text: widget.text, style: widget.style),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    // Use the container width minus padding
+    const containerWidth = 480.0 -
+        32.0 -
+        32.0; // card width - card padding - container padding (16*2)
+    textPainter.layout(maxWidth: containerWidth);
+    _textHeight = textPainter.size.height;
+
+    setState(() {
+      _needsScrolling = _textHeight > widget.height;
+    });
+
+    if (_needsScrolling) {
+      _startScrolling();
+    }
+  }
+
+  void _startScrolling() async {
+    if (!mounted || !_needsScrolling) return;
+
+    await Future.delayed(widget.pauseDuration);
+    if (!mounted) return;
+
+    while (mounted && _needsScrolling) {
+      // Ensure we start from the top
+      _scrollController.reset();
+      _fadeController.value = 1.0;
+
+      // Scroll down (forward)
+      _scrollController.duration = widget.scrollDuration;
+      await _scrollController.forward();
+      if (!mounted) break;
+
+      await Future.delayed(widget.pauseDuration);
+      if (!mounted) break;
+
+      // Fade out
+      _fadeAnimation =
+          Tween<double>(begin: 1.0, end: 0.0).animate(_fadeController);
+      await _fadeController.forward();
+      if (!mounted) break;
+
+      // Reset to top while faded out
+      _scrollController.reset();
+
+      // Fade back in
+      _fadeAnimation =
+          Tween<double>(begin: 0.0, end: 1.0).animate(_fadeController);
+      _fadeController.reset();
+      await _fadeController.forward();
+      if (!mounted) break;
+
+      await Future.delayed(widget.pauseDuration);
+      if (!mounted) break;
+    }
+  }
+
+  void _handleScrollAnimation() {
+    if (!mounted || !_needsScrolling || !_textScrollController.hasClients) {
+      return;
+    }
+
+    // Get the actual maximum scroll extent from the ScrollController
+    // This is the real, measured distance the text can scroll within the container
+    final actualMaxExtent = _textScrollController.position.maxScrollExtent;
+
+    // Dynamic padding: shorter text needs less padding to avoid overshooting
+    // Longer text needs more padding to ensure the last line is fully visible
+    final extraScrollPadding = actualMaxExtent < 50 ? 5.0 : 15.0;
+
+    // Calculate the target scroll distance with padding for animation purposes
+    // This allows the animation to go slightly beyond the actual content
+    final safeMaxExtent = (actualMaxExtent + extraScrollPadding)
+        .clamp(0.0, actualMaxExtent + extraScrollPadding);
+
+    // Calculate where we should be in the animation
+    final scrollOffset = _scrollAnimation.value * safeMaxExtent;
+
+    // CRITICAL: Clamp the final scroll position to the actual maximum extent
+    // This prevents the "bounce back" effect by ensuring we never scroll
+    // beyond what the ScrollController can actually handle
+    final clampedOffset = scrollOffset.clamp(0.0, actualMaxExtent);
+
+    _textScrollController.jumpTo(clampedOffset);
+  }
+
+  @override
+  void didUpdateWidget(AutoScrollingText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _scrollController.reset();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkIfScrollingNeeded();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _fadeController.dispose();
+    _textScrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRect(
+      child: SizedBox(
+        height: widget.height,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SingleChildScrollView(
+            controller: _textScrollController,
+            physics: const NeverScrollableScrollPhysics(),
+            child: Text(
+              widget.text,
+              style: widget.style,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -17,10 +17,6 @@ class ExhibitApp extends StatelessWidget {
       title: "CRCM Exhibit",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        //primaryColor: const Color(0xFFA60F2D),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFA60F2D),
-        ),
         useMaterial3: true,
       ),
       home: const MainSpeciesInformationScreen(),
