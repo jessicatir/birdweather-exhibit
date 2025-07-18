@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:birdweather_exhibit/graphql/mobileDetections.graphql.dart";
 import "package:birdweather_exhibit/services/bird_weather_service.dart";
 import "package:birdweather_exhibit/species_breakdown/live_detection/live_detection_state.dart";
 import "package:birdweather_exhibit/utils/utils.dart";
@@ -10,18 +11,22 @@ part "live_detection_notifier.g.dart";
 @Riverpod(keepAlive: true)
 class LiveDetectionNotifier extends _$LiveDetectionNotifier {
   Timer? _timer;
+  List<DetectionWithStatus> _localDetectionList = [];
 
   @override
   FutureOr<LiveDetectionState> build() async {
     final birdWeatherService = ref.read(birdWeatherServiceProvider);
-    final detectionData = await birdWeatherService.getDetectionData();
-    final detection = detectionData.detections.nodes!.first;
-    final isLive = isNewerThan(detection!.timestamp!, 1);
+    final detectionData = await birdWeatherService.getDetectionData(limit: 10);
+
+    // Initialize the local list with the first 3 unique species
+    final allDetections =
+        detectionData.detections.nodes!.where((d) => d != null).toList();
+    _localDetectionList = _initializeLocalList(allDetections);
+
     _startNewDetectionPolling();
 
     return LiveDetectionState.loaded(
-      detection: detection,
-      isLive: isLive,
+      recentDetections: _localDetectionList,
     );
   }
 
@@ -41,30 +46,138 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     final currentState = await future;
     if (currentState is LiveDetectionLoadedState) {
       final birdWeatherService = ref.read(birdWeatherServiceProvider);
-      final detectionData = await birdWeatherService.getDetectionData();
-      final newDetection = detectionData.detections.nodes!.first;
-      final currentDetection = currentState.detection;
-      if (newDetection!.id == currentDetection!.id) {
-        // This is the same detection, but we'll turn off isLive if it is older than 2 minutes
-        if (isOlderThan(currentDetection.timestamp!, 2)) {
-          state = AsyncData(currentState.copyWith(
-            isLive: false,
-          ));
-        } else {
-          state = AsyncData(currentState.copyWith(
-            isLive: true,
-          ));
-        }
-      } else {
-        // New detection
-        state = AsyncData(LiveDetectionState.loaded(
-          detection: newDetection,
-          isLive: true,
-        ));
-      }
+      final detectionData =
+          await birdWeatherService.getDetectionData(limit: 10);
+
+      // Get all new detections
+      final allDetections =
+          detectionData.detections.nodes!.where((d) => d != null).toList();
+
+      // Update the local list with any new detections
+      _updateLocalListWithNewDetections(allDetections);
+
+      // Update live status for all detections in local list
+      _updateLiveStatus();
+
+      // Update state with the current local list
+      state = AsyncData(LiveDetectionState.loaded(
+        recentDetections: List.from(_localDetectionList),
+      ));
     } else {
       // If for some reason we have not yet successfully loaded data, invalidate state.
       ref.invalidateSelf();
+    }
+  }
+
+  List<DetectionWithStatus> _initializeLocalList(
+      List<Query$MobileDetections$detections$nodes?> allDetections) {
+    final Map<String, Query$MobileDetections$detections$nodes> uniqueSpecies =
+        {};
+
+    // Get unique species (newest detection for each species)
+    for (final detection in allDetections) {
+      if (detection == null) continue;
+
+      final speciesId = detection.species.id;
+      final timestamp = detection.timestamp!;
+
+      if (!uniqueSpecies.containsKey(speciesId) ||
+          DateTime.parse(timestamp)
+              .isAfter(DateTime.parse(uniqueSpecies[speciesId]!.timestamp!))) {
+        uniqueSpecies[speciesId] = detection;
+      }
+    }
+
+    // Sort by timestamp (newest first) and take up to 3
+    final sortedDetections = uniqueSpecies.values.toList();
+    sortedDetections.sort((a, b) =>
+        DateTime.parse(b.timestamp!).compareTo(DateTime.parse(a.timestamp!)));
+
+    return sortedDetections.take(3).map((detection) {
+      final isLive = isNewerThan(detection.timestamp!, 2);
+      return DetectionWithStatus(detection: detection, isLive: isLive);
+    }).toList();
+  }
+
+  /// These are the rules for determining a new detection:
+  /// 1. If the species is already in the local list, only replace it if the new detection is newer
+  /// 2. If the species is not in the local list and there is room (less than 3 detections), add it
+  /// 3. If the species is not in the local list and the list is full, replace the oldest detection if the new one is newer
+  void _updateLocalListWithNewDetections(
+      List<Query$MobileDetections$detections$nodes?> allDetections) {
+    for (final detection in allDetections) {
+      if (detection == null) continue;
+
+      final speciesId = detection.species.id;
+      final timestamp = detection.timestamp!;
+
+      // Check if this species is already in our local list
+      final existingIndex = _localDetectionList
+          .indexWhere((d) => d.detection.species.id == speciesId);
+
+      if (existingIndex != -1) {
+        // Species exists in local list - only replace if this detection is newer
+        final existingTimestamp =
+            _localDetectionList[existingIndex].detection.timestamp!;
+        if (DateTime.parse(timestamp)
+            .isAfter(DateTime.parse(existingTimestamp))) {
+          _localDetectionList[existingIndex] = DetectionWithStatus(
+            detection: detection,
+            isLive: isNewerThan(timestamp, 2),
+          );
+        }
+      } else if (_localDetectionList.length < 3) {
+        // New species and we have room - add it
+        _localDetectionList.add(DetectionWithStatus(
+          detection: detection,
+          isLive: isNewerThan(timestamp, 2),
+        ));
+      } else {
+        // New species but list is full - replace oldest if this is newer
+        final oldestIndex = _getOldestDetectionIndex();
+        final oldestTimestamp =
+            _localDetectionList[oldestIndex].detection.timestamp!;
+
+        if (DateTime.parse(timestamp)
+            .isAfter(DateTime.parse(oldestTimestamp))) {
+          _localDetectionList[oldestIndex] = DetectionWithStatus(
+            detection: detection,
+            isLive: isNewerThan(timestamp, 2),
+          );
+        }
+      }
+    }
+
+    // Sort the list by timestamp (newest first)
+    _localDetectionList.sort((a, b) => DateTime.parse(b.detection.timestamp!)
+        .compareTo(DateTime.parse(a.detection.timestamp!)));
+  }
+
+  int _getOldestDetectionIndex() {
+    int oldestIndex = 0;
+    DateTime oldestTime =
+        DateTime.parse(_localDetectionList[0].detection.timestamp!);
+
+    for (int i = 1; i < _localDetectionList.length; i++) {
+      final currentTime =
+          DateTime.parse(_localDetectionList[i].detection.timestamp!);
+      if (currentTime.isBefore(oldestTime)) {
+        oldestTime = currentTime;
+        oldestIndex = i;
+      }
+    }
+
+    return oldestIndex;
+  }
+
+  void _updateLiveStatus() {
+    for (int i = 0; i < _localDetectionList.length; i++) {
+      final detection = _localDetectionList[i];
+      final newLiveStatus = isNewerThan(detection.detection.timestamp!, 2);
+
+      if (detection.isLive != newLiveStatus) {
+        _localDetectionList[i] = detection.copyWith(isLive: newLiveStatus);
+      }
     }
   }
 }

@@ -7,12 +7,12 @@ part of 'top_species_notifier.dart';
 // **************************************************************************
 
 String _$topSpeciesNotifierHash() =>
-    r'45378ee5e24fe6f968a031ea1839c36e652bf63d';
+    r'c3ed539bb0c976000957c7bccbe6ec0840c62dc0';
 
 /// See also [TopSpeciesNotifier].
 @ProviderFor(TopSpeciesNotifier)
-final topSpeciesNotifierProvider = AutoDisposeAsyncNotifierProvider<
-    TopSpeciesNotifier, TopSpeciesState>.internal(
+final topSpeciesNotifierProvider =
+    AsyncNotifierProvider<TopSpeciesNotifier, TopSpeciesState>.internal(
   TopSpeciesNotifier.new,
   name: r'topSpeciesNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final topSpeciesNotifierProvider = AutoDisposeAsyncNotifierProvider<
   allTransitiveDependencies: null,
 );
 
-typedef _$TopSpeciesNotifier = AutoDisposeAsyncNotifier<TopSpeciesState>;
+typedef _$TopSpeciesNotifier = AsyncNotifier<TopSpeciesState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

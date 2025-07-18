@@ -16,28 +16,22 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$LiveDetectionState {
-  Query$MobileDetections$detections$nodes? get detection =>
+  List<DetectionWithStatus> get recentDetections =>
       throw _privateConstructorUsedError;
-  dynamic get isLive => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            Query$MobileDetections$detections$nodes? detection, dynamic isLive)
+    required TResult Function(List<DetectionWithStatus> recentDetections)
         loaded,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            Query$MobileDetections$detections$nodes? detection, dynamic isLive)?
-        loaded,
+    TResult? Function(List<DetectionWithStatus> recentDetections)? loaded,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            Query$MobileDetections$detections$nodes? detection, dynamic isLive)?
-        loaded,
+    TResult Function(List<DetectionWithStatus> recentDetections)? loaded,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -69,8 +63,7 @@ abstract class $LiveDetectionStateCopyWith<$Res> {
           LiveDetectionState value, $Res Function(LiveDetectionState) then) =
       _$LiveDetectionStateCopyWithImpl<$Res, LiveDetectionState>;
   @useResult
-  $Res call(
-      {Query$MobileDetections$detections$nodes? detection, dynamic isLive});
+  $Res call({List<DetectionWithStatus> recentDetections});
 }
 
 /// @nodoc
@@ -86,18 +79,13 @@ class _$LiveDetectionStateCopyWithImpl<$Res, $Val extends LiveDetectionState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? detection = freezed,
-    Object? isLive = freezed,
+    Object? recentDetections = null,
   }) {
     return _then(_value.copyWith(
-      detection: freezed == detection
-          ? _value.detection
-          : detection // ignore: cast_nullable_to_non_nullable
-              as Query$MobileDetections$detections$nodes?,
-      isLive: freezed == isLive
-          ? _value.isLive
-          : isLive // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+      recentDetections: null == recentDetections
+          ? _value.recentDetections
+          : recentDetections // ignore: cast_nullable_to_non_nullable
+              as List<DetectionWithStatus>,
     ) as $Val);
   }
 }
@@ -111,8 +99,7 @@ abstract class _$$LiveDetectionLoadedStateImplCopyWith<$Res>
       __$$LiveDetectionLoadedStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {Query$MobileDetections$detections$nodes? detection, dynamic isLive});
+  $Res call({List<DetectionWithStatus> recentDetections});
 }
 
 /// @nodoc
@@ -128,15 +115,13 @@ class __$$LiveDetectionLoadedStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? detection = freezed,
-    Object? isLive = freezed,
+    Object? recentDetections = null,
   }) {
     return _then(_$LiveDetectionLoadedStateImpl(
-      detection: freezed == detection
-          ? _value.detection
-          : detection // ignore: cast_nullable_to_non_nullable
-              as Query$MobileDetections$detections$nodes?,
-      isLive: freezed == isLive ? _value.isLive! : isLive,
+      recentDetections: null == recentDetections
+          ? _value._recentDetections
+          : recentDetections // ignore: cast_nullable_to_non_nullable
+              as List<DetectionWithStatus>,
     ));
   }
 }
@@ -144,18 +129,24 @@ class __$$LiveDetectionLoadedStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LiveDetectionLoadedStateImpl extends LiveDetectionLoadedState {
-  const _$LiveDetectionLoadedStateImpl({this.detection, this.isLive = false})
-      : super._();
+  const _$LiveDetectionLoadedStateImpl(
+      {final List<DetectionWithStatus> recentDetections = const []})
+      : _recentDetections = recentDetections,
+        super._();
 
-  @override
-  final Query$MobileDetections$detections$nodes? detection;
+  final List<DetectionWithStatus> _recentDetections;
   @override
   @JsonKey()
-  final dynamic isLive;
+  List<DetectionWithStatus> get recentDetections {
+    if (_recentDetections is EqualUnmodifiableListView)
+      return _recentDetections;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_recentDetections);
+  }
 
   @override
   String toString() {
-    return 'LiveDetectionState.loaded(detection: $detection, isLive: $isLive)';
+    return 'LiveDetectionState.loaded(recentDetections: $recentDetections)';
   }
 
   @override
@@ -163,14 +154,13 @@ class _$LiveDetectionLoadedStateImpl extends LiveDetectionLoadedState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LiveDetectionLoadedStateImpl &&
-            (identical(other.detection, detection) ||
-                other.detection == detection) &&
-            const DeepCollectionEquality().equals(other.isLive, isLive));
+            const DeepCollectionEquality()
+                .equals(other._recentDetections, _recentDetections));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, detection, const DeepCollectionEquality().hash(isLive));
+      runtimeType, const DeepCollectionEquality().hash(_recentDetections));
 
   @JsonKey(ignore: true)
   @override
@@ -182,33 +172,28 @@ class _$LiveDetectionLoadedStateImpl extends LiveDetectionLoadedState {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            Query$MobileDetections$detections$nodes? detection, dynamic isLive)
+    required TResult Function(List<DetectionWithStatus> recentDetections)
         loaded,
   }) {
-    return loaded(detection, isLive);
+    return loaded(recentDetections);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            Query$MobileDetections$detections$nodes? detection, dynamic isLive)?
-        loaded,
+    TResult? Function(List<DetectionWithStatus> recentDetections)? loaded,
   }) {
-    return loaded?.call(detection, isLive);
+    return loaded?.call(recentDetections);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            Query$MobileDetections$detections$nodes? detection, dynamic isLive)?
-        loaded,
+    TResult Function(List<DetectionWithStatus> recentDetections)? loaded,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(detection, isLive);
+      return loaded(recentDetections);
     }
     return orElse();
   }
@@ -244,14 +229,12 @@ class _$LiveDetectionLoadedStateImpl extends LiveDetectionLoadedState {
 
 abstract class LiveDetectionLoadedState extends LiveDetectionState {
   const factory LiveDetectionLoadedState(
-      {final Query$MobileDetections$detections$nodes? detection,
-      final dynamic isLive}) = _$LiveDetectionLoadedStateImpl;
+          {final List<DetectionWithStatus> recentDetections}) =
+      _$LiveDetectionLoadedStateImpl;
   const LiveDetectionLoadedState._() : super._();
 
   @override
-  Query$MobileDetections$detections$nodes? get detection;
-  @override
-  dynamic get isLive;
+  List<DetectionWithStatus> get recentDetections;
   @override
   @JsonKey(ignore: true)
   _$$LiveDetectionLoadedStateImplCopyWith<_$LiveDetectionLoadedStateImpl>

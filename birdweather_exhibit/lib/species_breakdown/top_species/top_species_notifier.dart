@@ -6,7 +6,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "top_species_notifier.g.dart";
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TopSpeciesNotifier extends _$TopSpeciesNotifier {
   Timer? _timer;
 

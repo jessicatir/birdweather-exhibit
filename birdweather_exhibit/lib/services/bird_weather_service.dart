@@ -55,13 +55,13 @@ class BirdWeatherService {
     }
   }
 
-  Future<Query$MobileDetections> getDetectionData() async {
+  Future<Query$MobileDetections> getDetectionData({int limit = 3}) async {
     final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
     final response = await birdWeatherApi.query$MobileDetections(
       Options$Query$MobileDetections(
         variables: Variables$Query$MobileDetections(
           stationIds: ["2354"],
-          limit: 1,
+          limit: limit,
         ),
       ),
     );

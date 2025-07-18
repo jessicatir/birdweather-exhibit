@@ -1,7 +1,7 @@
-import 'package:graphql/client.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import "package:graphql/client.dart";
+import "package:riverpod_annotation/riverpod_annotation.dart";
 
-part 'api_providers.g.dart';
+part "api_providers.g.dart";
 
 @riverpod
 GraphQLClient birdWeatherGraphQLClient(BirdWeatherGraphQLClientRef ref) {

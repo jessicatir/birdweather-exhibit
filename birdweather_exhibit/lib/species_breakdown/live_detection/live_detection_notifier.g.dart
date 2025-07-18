@@ -7,7 +7,7 @@ part of 'live_detection_notifier.dart';
 // **************************************************************************
 
 String _$liveDetectionNotifierHash() =>
-    r'b62ae12084327f1c6feca35f04b4337fb4fe9aec';
+    r'4116c3c6dea6066a26ba2671b5a093cad2bd7344';
 
 /// See also [LiveDetectionNotifier].
 @ProviderFor(LiveDetectionNotifier)
