@@ -27,39 +27,82 @@ class BirdWeatherService {
 
   HiveGraphQLCache get _cache => ref.read(hiveGraphQLCacheProvider);
 
+  /// Execute operation with retry logic and exponential backoff
+  Future<T> _executeWithRetry<T>(Future<T> Function() operation) async {
+    int attempts = 0;
+    Duration delay = CacheConfig.initialRetryDelay;
+
+    while (attempts <= CacheConfig.maxRetries) {
+      try {
+        return await operation();
+      } catch (error) {
+        attempts++;
+
+        // Don't retry if we've exceeded max attempts or error is not retryable
+        if (attempts > CacheConfig.maxRetries || !_isRetryableError(error)) {
+          rethrow;
+        }
+
+        debugPrint(
+            "Retry attempt $attempts after ${delay.inMilliseconds}ms delay. Error: $error");
+
+        // Wait with exponential backoff
+        await Future.delayed(delay);
+        delay = Duration(
+          milliseconds:
+              (delay.inMilliseconds * CacheConfig.retryBackoffMultiplier)
+                  .round(),
+        );
+      }
+    }
+
+    throw Exception("Max retries exceeded");
+  }
+
+  /// Check if error is worth retrying (network-related errors only)
+  bool _isRetryableError(dynamic error) {
+    return _isNetworkError(error);
+  }
+
   Future<Query$TopBirdWeatherSpecies> getTopBirdWeatherSpecies() async {
     final cacheKey = HiveGraphQLCache.topSpeciesKey("2354");
 
     try {
-      final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
-      final response = await birdWeatherApi.query$TopBirdWeatherSpecies(
-        Options$Query$TopBirdWeatherSpecies(
-          variables: Variables$Query$TopBirdWeatherSpecies(
-            period: Input$InputDuration(count: 24, unit: "hour"),
-            limit: 10,
-            stationIds: ["2354"],
+      // Execute with retry logic
+      final result = await _executeWithRetry(() async {
+        final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
+        final response = await birdWeatherApi.query$TopBirdWeatherSpecies(
+          Options$Query$TopBirdWeatherSpecies(
+            variables: Variables$Query$TopBirdWeatherSpecies(
+              period: Input$InputDuration(count: 24, unit: "hour"),
+              limit: 10,
+              stationIds: ["2354"],
+            ),
           ),
-        ),
-      );
-
-      if (!response.hasException && response.parsedData != null) {
-        // Mark that data came from network (not cache)
-        ref.read(lastDataFromCacheProvider.notifier).state = false;
-
-        // Cache successful response
-        await _cache.put(
-          cacheKey,
-          response.parsedData!.toJson(),
-          CacheConfig.topSpeciesTTL,
         );
-        return response.parsedData!;
-      } else {
-        throw response.exception!;
-      }
+
+        if (!response.hasException && response.parsedData != null) {
+          return response.parsedData!;
+        } else {
+          throw response.exception!;
+        }
+      });
+
+      // Mark that data came from network (not cache)
+      ref.read(lastDataFromCacheProvider.notifier).state = false;
+
+      // Cache successful response
+      await _cache.put(
+        cacheKey,
+        result.toJson(),
+        CacheConfig.topSpeciesTTL,
+      );
+      return result;
     } catch (e) {
       // Check if this is a network/offline error
       if (_isNetworkError(e)) {
-        debugPrint("Network error for top species, trying cache: $e");
+        debugPrint(
+            "Network error for top species after retries, trying cache: $e");
 
         final cachedData = await _cache.get(cacheKey);
         if (cachedData != null) {
@@ -82,31 +125,37 @@ class BirdWeatherService {
     final cacheKey = HiveGraphQLCache.sensorDataKey("2354");
 
     try {
-      final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
-      final response = await birdWeatherApi.query$StationSensors(
-        Options$Query$StationSensors(
-          variables: Variables$Query$StationSensors(stationId: "2354"),
-        ),
-      );
-
-      if (!response.hasException && response.parsedData != null) {
-        // Mark that data came from network (not cache)
-        ref.read(lastDataFromCacheProvider.notifier).state = false;
-
-        // Cache successful response
-        await _cache.put(
-          cacheKey,
-          response.parsedData!.toJson(),
-          CacheConfig.sensorDataTTL,
+      // Execute with retry logic
+      final result = await _executeWithRetry(() async {
+        final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
+        final response = await birdWeatherApi.query$StationSensors(
+          Options$Query$StationSensors(
+            variables: Variables$Query$StationSensors(stationId: "2354"),
+          ),
         );
-        return response.parsedData!;
-      } else {
-        throw response.exception!;
-      }
+
+        if (!response.hasException && response.parsedData != null) {
+          return response.parsedData!;
+        } else {
+          throw response.exception!;
+        }
+      });
+
+      // Mark that data came from network (not cache)
+      ref.read(lastDataFromCacheProvider.notifier).state = false;
+
+      // Cache successful response
+      await _cache.put(
+        cacheKey,
+        result.toJson(),
+        CacheConfig.sensorDataTTL,
+      );
+      return result;
     } catch (e) {
       // Check if this is a network/offline error
       if (_isNetworkError(e)) {
-        debugPrint("Network error for sensor data, trying cache: $e");
+        debugPrint(
+            "Network error for sensor data after retries, trying cache: $e");
 
         final cachedData = await _cache.get(cacheKey);
         if (cachedData != null) {
@@ -129,31 +178,37 @@ class BirdWeatherService {
     final cacheKey = HiveGraphQLCache.detectionsKey("2354", limit);
 
     try {
-      final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
-      final response = await birdWeatherApi.query$MobileDetections(
-        Options$Query$MobileDetections(
-          variables: Variables$Query$MobileDetections(
-            stationIds: ["2354"],
-            limit: limit,
+      // Execute with retry logic
+      final result = await _executeWithRetry(() async {
+        final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
+        final response = await birdWeatherApi.query$MobileDetections(
+          Options$Query$MobileDetections(
+            variables: Variables$Query$MobileDetections(
+              stationIds: ["2354"],
+              limit: limit,
+            ),
           ),
-        ),
-      );
-
-      if (!response.hasException && response.parsedData != null) {
-        // Cache successful response with short TTL for live data
-        await _cache.put(
-          cacheKey,
-          response.parsedData!.toJson(),
-          CacheConfig.liveDetectionTTL,
         );
-        return response.parsedData!;
-      } else {
-        throw response.exception!;
-      }
+
+        if (!response.hasException && response.parsedData != null) {
+          return response.parsedData!;
+        } else {
+          throw response.exception!;
+        }
+      });
+
+      // Cache successful response with short TTL for live data
+      await _cache.put(
+        cacheKey,
+        result.toJson(),
+        CacheConfig.liveDetectionTTL,
+      );
+      return result;
     } catch (e) {
       // Check if this is a network/offline error
       if (_isNetworkError(e)) {
-        debugPrint("Network error for detection data, trying cache: $e");
+        debugPrint(
+            "Network error for detection data after retries, trying cache: $e");
 
         final cachedData = await _cache.get(cacheKey);
         if (cachedData != null) {

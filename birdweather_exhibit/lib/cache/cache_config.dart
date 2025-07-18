@@ -6,6 +6,11 @@ class CacheConfig {
   static const Duration sensorDataTTL = Duration(minutes: 5);
   static const Duration speciesMetadataTTL = Duration(hours: 24);
 
+  // Retry configuration
+  static const int maxRetries = 4;
+  static const Duration initialRetryDelay = Duration(seconds: 3);
+  static const double retryBackoffMultiplier = 2.0;
+
   // Cache keys
   static const String liveDetectionsKey = "live_detections";
   static const String topSpeciesKey = "top_species";
@@ -14,11 +19,6 @@ class CacheConfig {
 
   // Hive box names
   static const String birdWeatherCacheBox = "birdweather_cache";
-
-  // Network retry configuration
-  static const int maxRetries = 3;
-  static const Duration initialRetryDelay = Duration(seconds: 1);
-  static const double retryBackoffMultiplier = 2.0;
 }
 
 /// Cache entry wrapper with TTL support
