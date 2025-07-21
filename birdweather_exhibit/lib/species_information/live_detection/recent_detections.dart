@@ -67,7 +67,7 @@ class _FloatingRecentDetectionState extends ConsumerState<RecentDetections>
                       scientificName: detection.species.scientificName!,
                       timestamp: detection.timestamp!,
                       isLive: detectionWithStatus.isLive,
-                      description: detection.species.wikipediaSummary!,
+                      description: detectionWithStatus.resolvedDescription,
                       slideAnimation: _slideAnimations[detectionId],
                       fadeAnimation: _fadeAnimations[detectionId],
                     ),

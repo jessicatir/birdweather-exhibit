@@ -1,0 +1,39 @@
+query USSpeciesDetections(
+  $first: Int
+  $after: String
+  $period: InputDuration
+  $countries: [String!]
+) {
+  detections(
+    first: $first
+    after: $after
+    period: $period
+    countries: $countries
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      id
+      species {
+        id
+        scientificName
+        commonName
+        thumbnailUrl
+        imageUrl
+        birdweatherUrl
+        ebirdUrl
+        wikipediaUrl
+        wikipediaSummary
+        color
+        imageCredit
+        imageLicense
+        imageLicenseUrl
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

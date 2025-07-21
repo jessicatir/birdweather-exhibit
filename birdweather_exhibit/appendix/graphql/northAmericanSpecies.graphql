@@ -1,0 +1,38 @@
+query NorthAmericanSpecies(
+  $limit: Int
+  $offset: Int
+  $period: InputDuration
+  $ne: InputLocation
+  $sw: InputLocation
+) {
+  species: topSpecies(
+    limit: $limit
+    offset: $offset
+    period: $period
+    ne: $ne
+    sw: $sw
+  ) {
+    speciesId
+    species {
+      id
+      scientificName
+      commonName
+      alpha
+      alpha6
+      ebirdCode
+      thumbnailUrl
+      imageUrl
+      birdweatherUrl
+      ebirdUrl
+      wikipediaUrl
+      wikipediaSummary
+      color
+      imageCredit
+      imageLicense
+      imageLicenseUrl
+      __typename
+    }
+    count
+    __typename
+  }
+}

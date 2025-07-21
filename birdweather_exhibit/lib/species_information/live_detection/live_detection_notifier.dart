@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:birdweather_exhibit/graphql/mobileDetections.graphql.dart";
 import "package:birdweather_exhibit/services/bird_weather_service.dart";
+import "package:birdweather_exhibit/providers/species_description_provider.dart";
 import "package:birdweather_exhibit/species_information/live_detection/live_detection_state.dart";
 import "package:birdweather_exhibit/utils/utils.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -21,7 +22,7 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     // Initialize the local list with the first 3 unique species
     final allDetections =
         detectionData.detections.nodes!.where((d) => d != null).toList();
-    _localDetectionList = _initializeLocalList(allDetections);
+    _localDetectionList = await _initializeLocalList(allDetections);
 
     _startNewDetectionPolling();
 
@@ -54,7 +55,7 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
           detectionData.detections.nodes!.where((d) => d != null).toList();
 
       // Update the local list with any new detections
-      _updateLocalListWithNewDetections(allDetections);
+      await _updateLocalListWithNewDetections(allDetections);
 
       // Update live status for all detections in local list
       _updateLiveStatus();
@@ -69,8 +70,8 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     }
   }
 
-  List<DetectionWithStatus> _initializeLocalList(
-      List<Query$MobileDetections$detections$nodes?> allDetections) {
+  Future<List<DetectionWithStatus>> _initializeLocalList(
+      List<Query$MobileDetections$detections$nodes?> allDetections) async {
     final Map<String, Query$MobileDetections$detections$nodes> uniqueSpecies =
         {};
 
@@ -93,18 +94,35 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     sortedDetections.sort((a, b) =>
         DateTime.parse(b.timestamp!).compareTo(DateTime.parse(a.timestamp!)));
 
-    return sortedDetections.take(3).map((detection) {
+    // Resolve descriptions for all detections
+    final detectionList = <DetectionWithStatus>[];
+    final descriptionProvider = ref.read(speciesDescriptionProviderProvider);
+
+    for (final detection in sortedDetections.take(3)) {
       final isLive = isNewerThan(detection.timestamp!, 2);
-      return DetectionWithStatus(detection: detection, isLive: isLive);
-    }).toList();
+      final resolvedDescription = await descriptionProvider.resolveDescription(
+        detection.species.id,
+        detection.species.wikipediaSummary,
+      );
+
+      detectionList.add(DetectionWithStatus(
+        detection: detection,
+        isLive: isLive,
+        resolvedDescription: resolvedDescription,
+      ));
+    }
+
+    return detectionList;
   }
 
   /// These are the rules for determining a new detection:
   /// 1. If the species is already in the local list, only replace it if the new detection is newer
   /// 2. If the species is not in the local list and there is room (less than 3 detections), add it
   /// 3. If the species is not in the local list and the list is full, replace the oldest detection if the new one is newer
-  void _updateLocalListWithNewDetections(
-      List<Query$MobileDetections$detections$nodes?> allDetections) {
+  Future<void> _updateLocalListWithNewDetections(
+      List<Query$MobileDetections$detections$nodes?> allDetections) async {
+    final descriptionProvider = ref.read(speciesDescriptionProviderProvider);
+
     for (final detection in allDetections) {
       if (detection == null) continue;
 
@@ -121,16 +139,30 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
             _localDetectionList[existingIndex].detection.timestamp!;
         if (DateTime.parse(timestamp)
             .isAfter(DateTime.parse(existingTimestamp))) {
+          final resolvedDescription =
+              await descriptionProvider.resolveDescription(
+            detection.species.id,
+            detection.species.wikipediaSummary,
+          );
+
           _localDetectionList[existingIndex] = DetectionWithStatus(
             detection: detection,
             isLive: isNewerThan(timestamp, 2),
+            resolvedDescription: resolvedDescription,
           );
         }
       } else if (_localDetectionList.length < 3) {
         // New species and we have room - add it
+        final resolvedDescription =
+            await descriptionProvider.resolveDescription(
+          detection.species.id,
+          detection.species.wikipediaSummary,
+        );
+
         _localDetectionList.add(DetectionWithStatus(
           detection: detection,
           isLive: isNewerThan(timestamp, 2),
+          resolvedDescription: resolvedDescription,
         ));
       } else {
         // New species but list is full - replace oldest if this is newer
@@ -140,9 +172,16 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
 
         if (DateTime.parse(timestamp)
             .isAfter(DateTime.parse(oldestTimestamp))) {
+          final resolvedDescription =
+              await descriptionProvider.resolveDescription(
+            detection.species.id,
+            detection.species.wikipediaSummary,
+          );
+
           _localDetectionList[oldestIndex] = DetectionWithStatus(
             detection: detection,
             isLive: isNewerThan(timestamp, 2),
+            resolvedDescription: resolvedDescription,
           );
         }
       }

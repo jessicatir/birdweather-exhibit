@@ -1,0 +1,18 @@
+{
+  "fetchedAt": "2025-07-18T14:29:29.367146",
+  "totalSpecies": 0,
+  "region": "Continental United States",
+  "filterMethod": "Geographic bounding box (excludes Alaska, Hawaii, Canada, Mexico)",
+  "timePeriod": "Last 3 years",
+  "boundingBox": {
+    "northEast": {
+      "lat": 49.0,
+      "lon": -66.0
+    },
+    "southWest": {
+      "lat": 24.0,
+      "lon": -125.0
+    }
+  },
+  "species": []
+}

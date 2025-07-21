@@ -1,0 +1,38 @@
+query AllSpeciesSearch(
+  $first: Int
+  $after: String
+  $query: String
+  $limit: Int
+) {
+  searchSpecies(
+    first: $first
+    after: $after
+    query: $query
+    limit: $limit
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      id
+      scientificName
+      commonName
+      alpha
+      alpha6
+      ebirdCode
+      thumbnailUrl
+      imageUrl
+      birdweatherUrl
+      ebirdUrl
+      wikipediaUrl
+      wikipediaSummary
+      color
+      imageCredit
+      imageLicense
+      imageLicenseUrl
+      __typename
+    }
+    __typename
+  }
+}

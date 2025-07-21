@@ -12,23 +12,27 @@ sealed class LiveDetectionState with _$LiveDetectionState {
   const LiveDetectionState._();
 }
 
-// Simple class for detection with live status
+// Simple class for detection with live status and resolved description
 class DetectionWithStatus {
   final Query$MobileDetections$detections$nodes detection;
   final bool isLive;
+  final String resolvedDescription;
 
   const DetectionWithStatus({
     required this.detection,
     this.isLive = false,
+    this.resolvedDescription = "",
   });
 
   DetectionWithStatus copyWith({
     Query$MobileDetections$detections$nodes? detection,
     bool? isLive,
+    String? resolvedDescription,
   }) {
     return DetectionWithStatus(
       detection: detection ?? this.detection,
       isLive: isLive ?? this.isLive,
+      resolvedDescription: resolvedDescription ?? this.resolvedDescription,
     );
   }
 }
