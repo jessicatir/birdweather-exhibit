@@ -10,7 +10,7 @@ Contains GraphQL query files and their generated Dart code used during data coll
 - `usSpeciesDetections.graphql*` - Query for US species using country filter (experimental)
 - `allSpeciesSearch.graphql*` - Query for global species search
 
-### `/data/`
+### `/unused_data/`
 Contains the collected species datasets in JSON format:
 - `north_american_species.json` - 856 North American species (30-day period)
 - `comprehensive_north_american_species.json` - 1,179 North American species (6-month period)
