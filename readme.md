@@ -61,19 +61,25 @@ Before installing the app, you'll need:
    cd birdweather-exhibit/birdweather_exhibit
    ```
 
+
+3. **Add your background image**:
+   Place your background image in the `assets/images/` folder with any filename you prefer (e.g., `background.jpg`, `my-location.png`, etc.).
+
+   Supported image formats: JPG, PNG
+   Recommended: High-resolution landscape images work best for exhibit displays.
+
 2. **Install dependencies**:
    ```bash
    flutter pub get
    ```
 
-3. **Configure your station**:
+4. **Configure your station**:
    Open the file `lib/main.dart` and find these lines:
    ```dart
    stationId: "STATION_ID", // Replace with your station ID
    locationName: "LOCATION_NAME", // Replace with your location name
+   backgroundImageFilename: "background.jpg", // Replace with your background image filename
    ```
-
-   Replace `"STATION_ID"` with your station ID and `"LOCATION_NAME"` with your location name.
 
 4. **Build and run the app**:
    ```bash
@@ -90,6 +96,7 @@ The app uses a simple configuration system that connects to your specific BirdWe
 When you change these settings, the app automatically:
 - Connects to the correct listening station
 - Updates all displays with your location name
+- Loads your custom background image
 - Caches data for offline viewing
 - Subscribes to real-time detection updates
 

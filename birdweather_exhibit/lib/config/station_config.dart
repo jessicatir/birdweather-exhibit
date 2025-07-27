@@ -7,6 +7,7 @@ class StationConfig {
   const StationConfig({
     required this.stationId,
     required this.locationName,
+    required this.backgroundImageFilename,
   });
 
   /// The BirdWeather station ID to fetch data from
@@ -15,20 +16,25 @@ class StationConfig {
   /// The human-readable location name to display in the UI
   final String locationName;
 
+  /// The filename of the background image in assets/images/
+  final String backgroundImageFilename;
+
   /// Create a custom configuration
   static StationConfig custom({
     required String stationId,
     required String locationName,
+    required String backgroundImageFilename,
   }) {
     return StationConfig(
       stationId: stationId,
       locationName: locationName,
+      backgroundImageFilename: backgroundImageFilename,
     );
   }
 
   @override
   String toString() {
-    return "StationConfig(stationId: $stationId, locationName: $locationName)";
+    return "StationConfig(stationId: $stationId, locationName: $locationName, backgroundImageFilename: $backgroundImageFilename)";
   }
 
   @override
@@ -36,11 +42,13 @@ class StationConfig {
     if (identical(this, other)) return true;
     return other is StationConfig &&
         other.stationId == stationId &&
-        other.locationName == locationName;
+        other.locationName == locationName &&
+        other.backgroundImageFilename == backgroundImageFilename;
   }
 
   @override
-  int get hashCode => Object.hash(stationId, locationName);
+  int get hashCode =>
+      Object.hash(stationId, locationName, backgroundImageFilename);
 }
 
 /// Provider for the station configuration
@@ -54,6 +62,7 @@ class StationConfig {
 ///       StationConfig.custom(
 ///         stationId: "1234",
 ///         locationName: "My Custom Location",
+///         backgroundImageFilename: "background.jpg",
 ///       ),
 ///     ),
 ///   ],

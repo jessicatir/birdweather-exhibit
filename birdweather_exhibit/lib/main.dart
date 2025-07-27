@@ -16,6 +16,8 @@ void main() async {
           stationId: "2354", // Replace with your station ID
           locationName:
               "Pullman Neighborhood", // Replace with your location name
+          backgroundImageFilename:
+              "background.jpg", // Replace with your background image filename
         ),
       ),
     ],
