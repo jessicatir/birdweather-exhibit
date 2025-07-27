@@ -6,7 +6,7 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "hive_graphql_cache.g.dart";
 
-@riverpod
+@Riverpod(keepAlive: true)
 HiveGraphQLCache hiveGraphQLCache(HiveGraphQLCacheRef ref) {
   return HiveGraphQLCache();
 }
@@ -19,7 +19,7 @@ class HiveGraphQLCache {
   /// Initialize Hive cache
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
     try {
       await Hive.initFlutter();
       _cacheBox = await Hive.openBox<String>(CacheConfig.birdWeatherCacheBox);
@@ -173,7 +173,7 @@ class HiveGraphQLCache {
   static String generateKey(String operation, Map<String, dynamic>? variables) {
     final variablesString = variables != null ? jsonEncode(variables) : "";
     final keyBase = "${operation}_$variablesString";
-    
+
     // Use a simple hash to keep keys manageable
     return "${operation}_${keyBase.hashCode.abs()}";
   }
@@ -181,7 +181,8 @@ class HiveGraphQLCache {
   /// Generate cache key for specific BirdWeather operations
   static String topSpeciesKey(String stationId) => "top_species_$stationId";
   static String sensorDataKey(String stationId) => "sensor_data_$stationId";
-  static String detectionsKey(String stationId, int limit) => "detections_${stationId}_$limit";
+  static String detectionsKey(String stationId, int limit) =>
+      "detections_${stationId}_$limit";
 
   /// Dispose resources
   Future<void> dispose() async {

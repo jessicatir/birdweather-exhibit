@@ -7,7 +7,7 @@ part of 'species_description_provider.dart';
 // **************************************************************************
 
 String _$speciesDescriptionProviderHash() =>
-    r'e68e9b4c5c92c42606150ca7a05f044caa54be14';
+    r'd3393b46c388ce226ab5653cee39dc46e6a8a7d5';
 
 /// Provider for resolving which description to use for a species
 ///
