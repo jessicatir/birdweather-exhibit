@@ -229,7 +229,7 @@ class DetectionCard extends StatelessWidget {
                         height: 1.3,
                       ),
                       height: 110.0,
-                      scrollDuration: const Duration(seconds: 25),
+                      scrollDuration: const Duration(seconds: 28),
                       pauseDuration: const Duration(seconds: 3),
                     ),
                   ),

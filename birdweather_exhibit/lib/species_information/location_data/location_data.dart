@@ -1,3 +1,4 @@
+import "package:birdweather_exhibit/config/station_config.dart";
 import "package:birdweather_exhibit/species_information/location_data/components/aqi_indicator.dart";
 import "package:birdweather_exhibit/species_information/location_data/components/location_data_item.dart";
 import "package:birdweather_exhibit/species_information/location_data/components/location_data_live_status_indicator.dart";
@@ -23,15 +24,16 @@ class LocationData extends ConsumerWidget {
   }
 }
 
-class _LocationDataLoadedWidget extends StatelessWidget {
+class _LocationDataLoadedWidget extends ConsumerWidget {
   final AsyncData<TopSpeciesState> data;
 
   const _LocationDataLoadedWidget({required this.data});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final state = data.value;
     final sensorData = state.sensorData;
+    final config = ref.read(stationConfigProvider);
 
     double? temperature;
     int? humidity;
@@ -59,9 +61,9 @@ class _LocationDataLoadedWidget extends StatelessWidget {
             children: [
               const LocationDataLiveStatusIndicator(),
               const SizedBox(height: 12),
-              const LocationDataItem(
+              LocationDataItem(
                 label: "Location",
-                value: "Pullman Neighborhood",
+                value: config.locationName,
                 icon: Icons.location_on,
               ),
               if (temperature != null) ...[

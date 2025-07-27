@@ -1,5 +1,6 @@
 import "package:birdweather_exhibit/api_providers.dart";
 import "package:birdweather_exhibit/cache/cache_config.dart";
+import "package:birdweather_exhibit/config/station_config.dart";
 import "package:birdweather_exhibit/graphql/mobileDetections.graphql.dart";
 import "package:birdweather_exhibit/graphql/newDetection.graphql.dart";
 import "package:birdweather_exhibit/graphql/schema.graphql.dart";
@@ -26,6 +27,7 @@ class BirdWeatherService {
   final BirdWeatherServiceRef ref;
 
   HiveGraphQLCache get _cache => ref.read(hiveGraphQLCacheProvider);
+  StationConfig get _config => ref.read(stationConfigProvider);
 
   /// Execute operation with retry logic and exponential backoff
   Future<T> _executeWithRetry<T>(Future<T> Function() operation) async {
@@ -65,7 +67,7 @@ class BirdWeatherService {
   }
 
   Future<Query$TopBirdWeatherSpecies> getTopBirdWeatherSpecies() async {
-    final cacheKey = HiveGraphQLCache.topSpeciesKey("2354");
+    final cacheKey = HiveGraphQLCache.topSpeciesKey(_config.stationId);
 
     try {
       // Execute with retry logic
@@ -76,7 +78,7 @@ class BirdWeatherService {
             variables: Variables$Query$TopBirdWeatherSpecies(
               period: Input$InputDuration(count: 24, unit: "hour"),
               limit: 10,
-              stationIds: ["2354"],
+              stationIds: [_config.stationId],
             ),
           ),
         );
@@ -122,7 +124,7 @@ class BirdWeatherService {
   }
 
   Future<Query$StationSensors> getStationSensorData() async {
-    final cacheKey = HiveGraphQLCache.sensorDataKey("2354");
+    final cacheKey = HiveGraphQLCache.sensorDataKey(_config.stationId);
 
     try {
       // Execute with retry logic
@@ -130,7 +132,8 @@ class BirdWeatherService {
         final birdWeatherApi = ref.read(birdWeatherGraphQLClientProvider);
         final response = await birdWeatherApi.query$StationSensors(
           Options$Query$StationSensors(
-            variables: Variables$Query$StationSensors(stationId: "2354"),
+            variables:
+                Variables$Query$StationSensors(stationId: _config.stationId),
           ),
         );
 
@@ -175,7 +178,7 @@ class BirdWeatherService {
   }
 
   Future<Query$MobileDetections> getDetectionData({int limit = 3}) async {
-    final cacheKey = HiveGraphQLCache.detectionsKey("2354", limit);
+    final cacheKey = HiveGraphQLCache.detectionsKey(_config.stationId, limit);
 
     try {
       // Execute with retry logic
@@ -184,7 +187,7 @@ class BirdWeatherService {
         final response = await birdWeatherApi.query$MobileDetections(
           Options$Query$MobileDetections(
             variables: Variables$Query$MobileDetections(
-              stationIds: ["2354"],
+              stationIds: [_config.stationId],
               limit: limit,
             ),
           ),
@@ -230,7 +233,7 @@ class BirdWeatherService {
     final subscription =
         birdWeatherApi.subscribe(Options$Subscription$NewDetection(
             variables: Variables$Subscription$NewDetection(
-      stationIds: ["2354"],
+      stationIds: [_config.stationId],
     )));
     return subscription.map((response) {
       if (!response.hasException && response.parsedData != null) {
