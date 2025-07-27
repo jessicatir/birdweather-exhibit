@@ -23,7 +23,7 @@ class SpeciesDescriptionProvider extends _$SpeciesDescriptionProvider {
   /// [speciesId] - The ID of the species to resolve the description for
   /// [apiDescription] - The description from the API (typically wikipediaSummary)
   ///
-  /// Returns the resolved description string
+  /// Returns the resolved description string with sources appended
   Future<String> resolveDescription(
       String speciesId, String? apiDescription) async {
     try {
@@ -36,7 +36,17 @@ class SpeciesDescriptionProvider extends _$SpeciesDescriptionProvider {
       if (localSpecies != null) {
         debugPrint(
             "Using local description for species $speciesId (${localSpecies.commonName})");
-        return localSpecies.description;
+
+        // Format the description with sources
+        final description = localSpecies.description;
+        final sources = localSpecies.sources;
+
+        if (sources.isNotEmpty) {
+          final sourcesText = sources.join(", ");
+          return "$description\n\n($sourcesText)";
+        } else {
+          return description;
+        }
       }
 
       // Species not found in local dataset, use truncated API description
@@ -54,7 +64,9 @@ class SpeciesDescriptionProvider extends _$SpeciesDescriptionProvider {
 
       debugPrint(
           "Using truncated API description for species $speciesId (${truncatedDescription.length} chars)");
-      return truncatedDescription;
+
+      // Append Wikipedia source for API descriptions
+      return "$truncatedDescription\n\n(Wikipedia)";
     } catch (e, stackTrace) {
       debugPrint("Error resolving description for species $speciesId: $e");
       debugPrint("Stack trace: $stackTrace");
@@ -62,10 +74,11 @@ class SpeciesDescriptionProvider extends _$SpeciesDescriptionProvider {
       // Fallback to truncated API description on error
       final fallbackDescription = apiDescription ?? "";
       if (fallbackDescription.isNotEmpty) {
-        return DescriptionTruncation.truncateToSentences(
+        final truncatedDescription = DescriptionTruncation.truncateToSentences(
           fallbackDescription,
           maxSentences: 4,
         );
+        return "$truncatedDescription\n\n(Wikipedia)";
       }
 
       return "";

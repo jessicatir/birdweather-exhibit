@@ -228,9 +228,8 @@ class DetectionCard extends StatelessWidget {
                         color: Colors.white.withValues(alpha: 0.9),
                         height: 1.3,
                       ),
-                      height:
-                          100.0, // 5 complete lines: 14px * 1.3 line height * 5 lines = 91px
-                      scrollDuration: const Duration(seconds: 18),
+                      height: 110.0,
+                      scrollDuration: const Duration(seconds: 25),
                       pauseDuration: const Duration(seconds: 3),
                     ),
                   ),
@@ -272,7 +271,7 @@ class AutoScrollingText extends StatefulWidget {
     required this.text,
     this.style,
     this.height = 60.0,
-    this.scrollDuration = const Duration(seconds: 8),
+    this.scrollDuration = const Duration(seconds: 10),
     this.pauseDuration = const Duration(seconds: 2),
     super.key,
   });

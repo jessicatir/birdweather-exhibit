@@ -19,7 +19,7 @@ class LocalSpecies with _$LocalSpecies {
       commonName: json["commonName"] as String,
       scientificName: json["scientificName"] as String,
       description: json["description"] as String,
-      sources: (json["sources"] as List<dynamic>).cast<String>(),
+      sources: (json["sources"] as List<dynamic>? ?? []).cast<String>(),
     );
   }
 }
@@ -44,7 +44,7 @@ class LocalSpeciesMetadata with _$LocalSpeciesMetadata {
       centerLocation: LocalSpeciesLocation.fromJson(
           json["centerLocation"] as Map<String, dynamic>),
       totalSpecies: json["totalSpecies"] as int,
-      fields: (json["fields"] as List<dynamic>).cast<String>(),
+      fields: (json["fields"] as List<dynamic>? ?? []).cast<String>(),
     );
   }
 }
@@ -94,7 +94,8 @@ class LocalSpeciesData with _$LocalSpeciesData {
     return LocalSpeciesData(
       metadata: LocalSpeciesMetadata.fromJson(
           json["metadata"] as Map<String, dynamic>),
-      species: (json["species"] as List<dynamic>)
+      species: (json["species"] as List<dynamic>? ?? [])
+          .where((e) => e != null)
           .map((e) => LocalSpecies.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
