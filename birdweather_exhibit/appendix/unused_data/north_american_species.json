@@ -1,0 +1,16 @@
+{
+  "fetchedAt": "2025-07-18T14:43:46.668510",
+  "totalSpecies": 0,
+  "region": "North America",
+  "boundingBox": {
+    "northEast": {
+      "lat": 83.0,
+      "lon": -50.0
+    },
+    "southWest": {
+      "lat": 14.0,
+      "lon": -180.0
+    }
+  },
+  "species": []
+}

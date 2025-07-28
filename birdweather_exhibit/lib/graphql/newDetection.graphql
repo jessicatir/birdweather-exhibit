@@ -1,0 +1,82 @@
+subscription NewDetection(
+  $speciesIds: [ID!],
+  $stationIds: [ID!],
+  $stationTypes: [String!],
+  $continents: [String!],
+  $countries: [String!],
+  $recordingModes: [String!],
+  $scoreGt: Float,
+  $scoreLt: Float,
+  $scoreGte: Float,
+  $scoreLte: Float,
+  $confidenceGt: Float,
+  $confidenceLt: Float,
+  $confidenceGte: Float,
+  $confidenceLte: Float,
+  $probabilityGt: Float,
+  $probabilityLt: Float,
+  $probabilityGte: Float,
+  $probabilityLte: Float,
+  $timeOfDayGte: Int,
+  $timeOfDayLte: Int
+) {
+  newDetection(
+    speciesIds: $speciesIds,
+    stationIds: $stationIds,
+    stationTypes: $stationTypes,
+    continents: $continents,
+    countries: $countries,
+    recordingModes: $recordingModes,
+    scoreGt: $scoreGt,
+    scoreLt: $scoreLt,
+    scoreGte: $scoreGte,
+    scoreLte: $scoreLte,
+    confidenceGt: $confidenceGt,
+    confidenceLt: $confidenceLt,
+    confidenceGte: $confidenceGte,
+    confidenceLte: $confidenceLte,
+    probabilityGt: $probabilityGt,
+    probabilityLt: $probabilityLt,
+    probabilityGte: $probabilityGte,
+    probabilityLte: $probabilityLte,
+    timeOfDayGte: $timeOfDayGte,
+    timeOfDayLte: $timeOfDayLte
+  ) {
+    detection {
+      id
+      timestamp
+      score
+      confidence
+      probability
+      certainty
+      coords {
+        lat
+        lon
+        __typename
+      }
+      species {
+        id
+        scientificName
+        commonName
+        thumbnailUrl
+        imageUrl
+        wikipediaUrl
+        wikipediaSummary
+        color
+        imageCredit
+        imageLicense
+        imageLicenseUrl
+        __typename
+      }
+      voteUrl
+      flagUrl
+      soundscape {
+        url
+        startTime
+        endTime
+        __typename
+      }
+      __typename
+    }
+  }
+}

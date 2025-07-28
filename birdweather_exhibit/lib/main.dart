@@ -1,80 +1,55 @@
-import 'dart:convert';
+import "package:birdweather_exhibit/config/station_config.dart";
+import "package:birdweather_exhibit/offline/hive_graphql_cache.dart";
+import "package:birdweather_exhibit/species_information/main_species_information_screen.dart";
+import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
-import 'package:birdweather_exhibit/services/bird_weather_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
-  runApp(const ProviderScope(
-    child: MyApp(),
+  // Create a container to initialize services with station configuration
+  final container = ProviderContainer(
+    overrides: [
+      // Configure the BirdWeather station to use
+      stationConfigProvider.overrideWithValue(
+        StationConfig.custom(
+          stationId: "2354", // Replace with your station ID
+          locationName:
+              "Pullman Neighborhood", // Replace with your location name
+          backgroundImageFilename:
+              "background.jpg", // Replace with your background image filename
+        ),
+      ),
+    ],
+  );
+
+  try {
+    // Initialize Hive cache
+    await container.read(hiveGraphQLCacheProvider).initialize();
+    debugPrint("Cache initialized successfully");
+  } catch (e) {
+    debugPrint("Cache initialization error: $e");
+    // Continue anyway - app should work without cache
+  }
+
+  runApp(UncontrolledProviderScope(
+    container: container,
+    child: const ExhibitApp(),
   ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ExhibitApp extends StatelessWidget {
+  const ExhibitApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: "CRCM Exhibit",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends ConsumerStatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  ConsumerState<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends ConsumerState<MyHomePage> {
-  var data = "";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'API result:',
-              ),
-              Text(
-                data,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final birdWeatherService = ref.read(birdWeatherServiceProvider);
-          final result = await birdWeatherService.getTopBirdWeatherSpecies();
-          final String prettyString =
-              const JsonEncoder.withIndent('  ').convert(result.toJson());
-          setState(() {
-            data = prettyString;
-          });
-        },
-        tooltip: 'Call API',
-        child: const Icon(Icons.add),
-      ),
+      home: const MainSpeciesInformationScreen(),
     );
   }
 }

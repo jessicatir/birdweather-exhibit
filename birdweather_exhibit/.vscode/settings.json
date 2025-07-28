@@ -1,3 +1,22 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.22.2"
+  "dart.flutterSdkPath": ".fvm/versions/3.29.3",
+  "dart.sdkPath": ".fvm/versions/3.29.3/bin/cache/dart-sdk",
+  "editor.defaultFormatter": "Dart-Code.dart-code",
+  "search.exclude": {
+    "**/.fvm": true
+  },
+  "files.watcherExclude": {
+    "**/.fvm": true
+  },
+  "editor.formatOnSave": true,
+  "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.minimap.enabled": false,
+  "git.openRepositoryInParentFolders": "always",
+  "githubPullRequests.pullBranch": "never",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "files.autoSave": "afterDelay",
+  "redhat.telemetry.enabled": false,
+  "dart.debugExternalPackageLibraries": true,
+  "dart.debugSdkLibraries": true
 }

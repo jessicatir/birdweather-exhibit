@@ -1,0 +1,55 @@
+query MobileDetections(
+  $limit: Int,
+  $ne: InputLocation,
+  $sw: InputLocation,
+  $speciesId: ID,
+  $stationIds: [ID!],
+  $period: InputDuration
+) {
+  detections(
+    first: $limit
+    stationIds: $stationIds
+    speciesId: $speciesId
+    period: $period
+    ne: $ne
+    sw: $sw
+  ) {
+    nodes {
+      id
+      timestamp
+      score
+      confidence
+      probability
+      certainty
+      coords {
+        lat
+        lon
+        __typename
+      }
+      species {
+        id
+        scientificName
+        commonName
+        thumbnailUrl
+        imageUrl
+        wikipediaUrl
+        wikipediaSummary
+        color
+        imageCredit
+        imageLicense
+        imageLicenseUrl
+        __typename
+      }
+      voteUrl
+      flagUrl
+      soundscape {
+        url
+        startTime
+        endTime
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

@@ -7,7 +7,7 @@ part of 'api_providers.dart';
 // **************************************************************************
 
 String _$birdWeatherGraphQLClientHash() =>
-    r'173bb49fbc86f98ca034f73a6aef084751cea0dd';
+    r'738e24c10b1ef11526b3b3ffc96621b8936adaf1';
 
 /// See also [birdWeatherGraphQLClient].
 @ProviderFor(birdWeatherGraphQLClient)
