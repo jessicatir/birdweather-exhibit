@@ -12,11 +12,9 @@ class MainSpeciesInformationScreen extends StatelessWidget {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final isLargeScreen = constraints.maxWidth > 1200;
-          final isMediumScreen = constraints.maxWidth > 800;
-
-          // Calculate responsive spacing
-          final spacing = isLargeScreen ? 20.0 : (isMediumScreen ? 16.0 : 12.0);
+          // Margin scales with screen size so the exhibit has breathing room
+          // around the edges on large displays, with sensible min/max bounds.
+          final spacing = (constraints.maxWidth * 0.03).clamp(16.0, 64.0);
 
           return Stack(
             children: [
