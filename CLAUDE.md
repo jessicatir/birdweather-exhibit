@@ -45,3 +45,32 @@ public museum-style exhibit.
 - **After deploying, the Fire Stick will keep showing the old build until
   AbleSign's service-worker cache is cleared** (clear its cache or re-add the
   URL). Many "the fix didn't work" reports are just stale cache.
+
+## Debugging WebView display issues
+
+Display bugs that only appear on the Fire Stick are hard to reproduce locally.
+The effective approach: deploy a small static diagnostic page that prints
+`window.innerWidth`, `devicePixelRatio`, `screen.*`, and the WebGL
+`MAX_TEXTURE_SIZE`/renderer, then load it via AbleSign and read the values.
+`diag.html` on the `deploy` branch of the pages repo is exactly this — that's
+how the DPR/texture-limit clipping was diagnosed. Remove it once no longer
+needed.
+
+## Exhibit copy
+
+This is a public, museum-style exhibit, so wording should be approachable:
+
+- **Soften "AI" language** — e.g. describe the detection as a "bird sound
+  detection algorithm" rather than "AI," to avoid alienating AI-skeptical
+  visitors.
+- **Name the location concretely** ("a neighborhood in Pullman, WA") rather than
+  vague phrasing.
+- Public-facing copy lives in
+  `birdweather_exhibit/lib/species_information/components/exhibit_info_card.dart`.
+
+## Repo housekeeping
+
+- The desktop **generated plugin registrant files** (`linux/`, `macos/`,
+  `windows/` `flutter/generated_plugin_registrant.*` and `generated_plugins.cmake`)
+  are gitignored — this is a web-only deploy and `flutter pub get`/build
+  regenerate them locally. Do not re-add or commit them.
