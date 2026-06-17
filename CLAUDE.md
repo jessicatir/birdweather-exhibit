@@ -28,9 +28,23 @@ public museum-style exhibit.
 - **Validate any display/layout change on the actual Fire Stick / AbleSign**, not
   just `flutter run -d edge`.
 
+## Environment setup
+
+- This project uses **FVM** (Flutter Version Management) to pin the Flutter SDK
+  version. The pinned version is declared in `birdweather_exhibit/.fvmrc`.
+- Install FVM: `dart pub global activate fvm`
+- Install the pinned SDK: `cd birdweather_exhibit && fvm install`
+- Link the project: `fvm use <version>` (reads from `.fvmrc`)
+- FVM installs to `C:\Users\<user>\AppData\Local\Pub\Cache\bin` (Windows). This
+  directory must be on the system PATH.
+- **After editing PATH, fully restart VS Code** (not just the terminal) — VS Code
+  inherits environment variables at launch and won't pick up changes from a new
+  terminal tab alone.
+- **Always use `fvm flutter ...` and `fvm dart ...`** instead of bare
+  `flutter`/`dart` to ensure the correct pinned SDK version is used.
+
 ## Build & preview
 
-- Flutter is pinned to **3.29.3** via fvm (`.fvmrc`). Use `fvm flutter ...`.
 - Local preview: `fvm flutter run -d edge` (Chrome may not be installed).
 
 ## Deploy
