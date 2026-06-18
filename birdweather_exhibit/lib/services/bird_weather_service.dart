@@ -77,7 +77,10 @@ class BirdWeatherService {
           Options$Query$TopBirdWeatherSpecies(
             variables: Variables$Query$TopBirdWeatherSpecies(
               period: Input$InputDuration(count: 24, unit: "hour"),
-              limit: 10,
+              // Fetch more than we display (top 10) so species-merge overrides
+              // can still combine a lower-ranked partner species before the UI
+              // trims the list. See applyOverridesToTopSpecies.
+              limit: 30,
               stationIds: [_config.stationId],
             ),
           ),
