@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:birdweather_exhibit/config/species_overrides.dart";
 import "package:birdweather_exhibit/services/bird_weather_service.dart";
 import "package:birdweather_exhibit/species_information/top_species/top_species_state.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
@@ -14,11 +15,14 @@ class TopSpeciesNotifier extends _$TopSpeciesNotifier {
   FutureOr<TopSpeciesState> build() async {
     final birdWeatherService = ref.read(birdWeatherServiceProvider);
     final topSpecies = await birdWeatherService.getTopBirdWeatherSpecies();
+    // Merge/rename species per the configured exceptions (e.g. Cordilleran +
+    // Pacific-slope Flycatcher -> Western Flycatcher with combined counts).
+    final mergedTopSpecies = applyOverridesToTopSpecies(topSpecies);
     final sensorData = await birdWeatherService.getStationSensorData();
     final lastUpdated = DateTime.now();
     _autoUpdateTopDetections();
     return TopSpeciesState(
-      topSpecies: topSpecies,
+      topSpecies: mergedTopSpecies,
       lastUpdated: lastUpdated,
       sensorData: sensorData,
     );

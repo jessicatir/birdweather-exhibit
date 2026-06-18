@@ -1,3 +1,4 @@
+import "package:birdweather_exhibit/config/species_overrides.dart";
 import "package:birdweather_exhibit/species_information/live_detection/components/detection_card.dart";
 import "package:birdweather_exhibit/species_information/live_detection/live_detection_notifier.dart";
 import "package:flutter/material.dart";
@@ -62,12 +63,23 @@ class _FloatingRecentDetectionState extends ConsumerState<RecentDetections>
                       const SizedBox(height: 16), // Spacing between cards
                     AnimatedDetectionCard(
                       detectionId: detectionId,
-                      imageUrl: detection.species.imageUrl!,
-                      commonName: detection.species.commonName,
-                      scientificName: detection.species.scientificName!,
+                      imageUrl: displayImageUrl(
+                            detection.species.commonName,
+                            detection.species.imageUrl,
+                          ) ??
+                          detection.species.imageUrl!,
+                      commonName: displayCommonName(detection.species.commonName),
+                      scientificName: displayScientificName(
+                            detection.species.commonName,
+                            detection.species.scientificName,
+                          ) ??
+                          detection.species.scientificName!,
                       timestamp: detection.timestamp!,
                       isLive: detectionWithStatus.isLive,
-                      description: detectionWithStatus.resolvedDescription,
+                      description: displayDescription(
+                        detection.species.commonName,
+                        detectionWithStatus.resolvedDescription,
+                      ),
                       slideAnimation: _slideAnimations[detectionId],
                       fadeAnimation: _fadeAnimations[detectionId],
                     ),

@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:birdweather_exhibit/config/species_overrides.dart";
 import "package:birdweather_exhibit/graphql/mobileDetections.graphql.dart";
 import "package:birdweather_exhibit/services/bird_weather_service.dart";
 import "package:birdweather_exhibit/providers/species_description_provider.dart";
@@ -17,7 +18,9 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
   @override
   FutureOr<LiveDetectionState> build() async {
     final birdWeatherService = ref.read(birdWeatherServiceProvider);
-    final detectionData = await birdWeatherService.getDetectionData(limit: 10);
+    // Fetch a wide window of recent detections so we can still surface 3
+    // distinct species when one species floods the most recent detections.
+    final detectionData = await birdWeatherService.getDetectionData(limit: 50);
 
     // Initialize the local list with the first 3 unique species
     final allDetections =
@@ -48,7 +51,7 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     if (currentState is LiveDetectionLoadedState) {
       final birdWeatherService = ref.read(birdWeatherServiceProvider);
       final detectionData =
-          await birdWeatherService.getDetectionData(limit: 10);
+          await birdWeatherService.getDetectionData(limit: 50);
 
       // Get all new detections
       final allDetections =
@@ -75,17 +78,19 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     final Map<String, Query$MobileDetections$detections$nodes> uniqueSpecies =
         {};
 
-    // Get unique species (newest detection for each species)
+    // Get unique species (newest detection for each species). Merged species
+    // (per the overrides) share a canonical key so they collapse to one card.
     for (final detection in allDetections) {
       if (detection == null) continue;
 
-      final speciesId = detection.species.id;
+      final speciesKey = canonicalSpeciesKey(
+          detection.species.commonName, detection.species.id);
       final timestamp = detection.timestamp!;
 
-      if (!uniqueSpecies.containsKey(speciesId) ||
+      if (!uniqueSpecies.containsKey(speciesKey) ||
           DateTime.parse(timestamp)
-              .isAfter(DateTime.parse(uniqueSpecies[speciesId]!.timestamp!))) {
-        uniqueSpecies[speciesId] = detection;
+              .isAfter(DateTime.parse(uniqueSpecies[speciesKey]!.timestamp!))) {
+        uniqueSpecies[speciesKey] = detection;
       }
     }
 
@@ -126,12 +131,16 @@ class LiveDetectionNotifier extends _$LiveDetectionNotifier {
     for (final detection in allDetections) {
       if (detection == null) continue;
 
-      final speciesId = detection.species.id;
+      final speciesKey = canonicalSpeciesKey(
+          detection.species.commonName, detection.species.id);
       final timestamp = detection.timestamp!;
 
-      // Check if this species is already in our local list
-      final existingIndex = _localDetectionList
-          .indexWhere((d) => d.detection.species.id == speciesId);
+      // Check if this species is already in our local list (canonical key so
+      // merged species are matched together).
+      final existingIndex = _localDetectionList.indexWhere((d) =>
+          canonicalSpeciesKey(
+              d.detection.species.commonName, d.detection.species.id) ==
+          speciesKey);
 
       if (existingIndex != -1) {
         // Species exists in local list - only replace if this detection is newer
