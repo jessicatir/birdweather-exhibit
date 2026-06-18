@@ -18,7 +18,38 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="A new Flutter project.">
+
+  <!--
+    Cap devicePixelRatio so Flutter's CanvasKit surface stays within the GPU's
+    MAX_TEXTURE_SIZE. Some devices (e.g. Fire TV sticks) report devicePixelRatio
+    as high as 4, which makes a 1920x1080 view request a 7680x4320 GL surface.
+    On a GPU with a 4096px max texture, only the left portion renders and the
+    rest is blank. Capping the ratio keeps the surface under that limit.
+    Must run before flutter.js initializes the engine.
+  -->
+  <script>
+    (function () {
+      try {
+        var MAX_TEXTURE = 4096;   // typical low-end GPU limit
+        var MARGIN = 0.95;        // stay safely under it
+        var real = window.devicePixelRatio || 1;
+        var longestSide = Math.max(
+          window.innerWidth || screen.width || 1920,
+          window.innerHeight || screen.height || 1080
+        );
+        var maxRatio = (MAX_TEXTURE * MARGIN) / longestSide;
+        var capped = Math.min(real, maxRatio);
+        if (capped > 0 && capped < real) {
+          Object.defineProperty(window, "devicePixelRatio", {
+            configurable: true,
+            get: function () { return capped; }
+          });
+        }
+      } catch (e) { /* leave devicePixelRatio untouched on any failure */ }
+    })();
+  </script>
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
