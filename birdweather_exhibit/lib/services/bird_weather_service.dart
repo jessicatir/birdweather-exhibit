@@ -16,7 +16,9 @@ part "bird_weather_service.g.dart";
 /// Simple provider to track if last data came from cache
 final lastDataFromCacheProvider = StateProvider<bool>((ref) => false);
 
-@riverpod
+// Scoped per station: depends on the (overridden-per-station) stationConfig, so
+// each station's ProviderScope gets its own service instance.
+@Riverpod(dependencies: [stationConfig])
 BirdWeatherService birdWeatherService(BirdWeatherServiceRef ref) {
   return BirdWeatherService(ref);
 }

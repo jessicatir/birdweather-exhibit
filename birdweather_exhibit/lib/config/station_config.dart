@@ -8,6 +8,7 @@ class StationConfig {
     required this.stationId,
     required this.locationName,
     required this.backgroundImageFilename,
+    required this.aboutLocationPhrase,
   });
 
   /// The BirdWeather station ID to fetch data from
@@ -16,25 +17,33 @@ class StationConfig {
   /// The human-readable location name to display in the UI
   final String locationName;
 
-  /// The filename of the background image in assets/images/
+  /// The background image path relative to assets/images/ — e.g.
+  /// "pullman/background.jpg" or "wsu/background.jpg".
   final String backgroundImageFilename;
+
+  /// Phrase describing where this station is, inserted after "detected " in the
+  /// About card — e.g. "in a neighborhood in Pullman, WA" or "on the WSU campus
+  /// in Pullman, WA". Include the leading preposition so it reads naturally.
+  final String aboutLocationPhrase;
 
   /// Create a custom configuration
   static StationConfig custom({
     required String stationId,
     required String locationName,
     required String backgroundImageFilename,
+    required String aboutLocationPhrase,
   }) {
     return StationConfig(
       stationId: stationId,
       locationName: locationName,
       backgroundImageFilename: backgroundImageFilename,
+      aboutLocationPhrase: aboutLocationPhrase,
     );
   }
 
   @override
   String toString() {
-    return "StationConfig(stationId: $stationId, locationName: $locationName, backgroundImageFilename: $backgroundImageFilename)";
+    return "StationConfig(stationId: $stationId, locationName: $locationName, backgroundImageFilename: $backgroundImageFilename, aboutLocationPhrase: $aboutLocationPhrase)";
   }
 
   @override
@@ -43,12 +52,13 @@ class StationConfig {
     return other is StationConfig &&
         other.stationId == stationId &&
         other.locationName == locationName &&
-        other.backgroundImageFilename == backgroundImageFilename;
+        other.backgroundImageFilename == backgroundImageFilename &&
+        other.aboutLocationPhrase == aboutLocationPhrase;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(stationId, locationName, backgroundImageFilename);
+  int get hashCode => Object.hash(
+      stationId, locationName, backgroundImageFilename, aboutLocationPhrase);
 }
 
 /// Provider for the station configuration

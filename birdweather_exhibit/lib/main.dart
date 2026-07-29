@@ -1,27 +1,37 @@
 import "package:birdweather_exhibit/config/station_config.dart";
 import "package:birdweather_exhibit/offline/hive_graphql_cache.dart";
-import "package:birdweather_exhibit/species_information/main_species_information_screen.dart";
+import "package:birdweather_exhibit/widgets/station_rotator.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+
+/// The BirdWeather stations the exhibit rotates through, in order. Add or remove
+/// entries here to change which stations are shown. Each is displayed inside its
+/// own scope so they all load independently and stay populated.
+final exhibitStations = <StationConfig>[
+  StationConfig.custom(
+    stationId: "2354",
+    locationName: "Pullman Neighborhood",
+    backgroundImageFilename: "pullman/background.jpg",
+    aboutLocationPhrase: "in a neighborhood in Pullman, WA",
+  ),
+  StationConfig.custom(
+    stationId: "7837",
+    locationName: "WSU Campus",
+    backgroundImageFilename: "wsu/background.jpg",
+    aboutLocationPhrase: "on the WSU campus in Pullman, WA",
+  ),
+];
+
+/// How long each station is shown before the display cuts to the next one.
+const stationRotationInterval = Duration(minutes: 7);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Create a container to initialize services with station configuration
-  final container = ProviderContainer(
-    overrides: [
-      // Configure the BirdWeather station to use
-      stationConfigProvider.overrideWithValue(
-        StationConfig.custom(
-          stationId: "2354", // Replace with your station ID
-          locationName:
-              "Pullman Neighborhood", // Replace with your location name
-          backgroundImageFilename:
-              "background.jpg", // Replace with your background image filename
-        ),
-      ),
-    ],
-  );
+  // Root container holds the station-independent, shared services (Hive cache,
+  // GraphQL client, local species data). Per-station providers are scoped inside
+  // each station's ProviderScope (see StationRotator).
+  final container = ProviderContainer();
 
   try {
     // Initialize Hive cache
@@ -49,7 +59,10 @@ class ExhibitApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const MainSpeciesInformationScreen(),
+      home: StationRotator(
+        stations: exhibitStations,
+        interval: stationRotationInterval,
+      ),
     );
   }
 }

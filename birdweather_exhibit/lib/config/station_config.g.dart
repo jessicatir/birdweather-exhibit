@@ -19,6 +19,7 @@ String _$stationConfigHash() => r'be318d248c675aa801019c929b84b355e9073448';
 ///       StationConfig.custom(
 ///         stationId: "1234",
 ///         locationName: "My Custom Location",
+///         backgroundImageFilename: "background.jpg",
 ///       ),
 ///     ),
 ///   ],
