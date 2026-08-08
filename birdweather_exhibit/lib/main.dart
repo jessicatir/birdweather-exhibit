@@ -7,6 +7,11 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 /// The BirdWeather stations the exhibit rotates through, in order. Add or remove
 /// entries here to change which stations are shown. Each is displayed inside its
 /// own scope so they all load independently and stay populated.
+///
+/// When adding a station, also add its image folder to the `assets:` list in
+/// `pubspec.yaml`. Flutter's asset directory declarations are not recursive, so
+/// a new `assets/images/<name>/` folder that isn't listed there won't be bundled
+/// and its background will silently fail to load at runtime.
 final exhibitStations = <StationConfig>[
   StationConfig.custom(
     stationId: "2354",

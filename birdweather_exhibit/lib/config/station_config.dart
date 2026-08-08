@@ -61,23 +61,31 @@ class StationConfig {
       stationId, locationName, backgroundImageFilename, aboutLocationPhrase);
 }
 
-/// Provider for the station configuration
+/// Provider for the station configuration.
 ///
-/// This provider MUST be overridden with a specific station configuration.
-/// Override this provider in your main.dart:
+/// This provider MUST be overridden with a specific station configuration; it
+/// has no default. `StationRotator` does the overriding, mounting each station
+/// in its own `ProviderScope` so the per-station providers that depend on this
+/// one (`birdWeatherService` and everything chaining off it) get their own
+/// instance per station:
 /// ```dart
-/// ProviderContainer(
+/// ProviderScope(
 ///   overrides: [
 ///     stationConfigProvider.overrideWithValue(
 ///       StationConfig.custom(
 ///         stationId: "1234",
 ///         locationName: "My Custom Location",
-///         backgroundImageFilename: "background.jpg",
+///         backgroundImageFilename: "my_location/background.jpg",
+///         aboutLocationPhrase: "in My Custom Location",
 ///       ),
 ///     ),
 ///   ],
+///   child: const MainSpeciesInformationScreen(),
 /// )
 /// ```
+///
+/// To change which stations the exhibit shows, edit the list in `main.dart`
+/// rather than overriding this directly.
 @Riverpod(keepAlive: true)
 StationConfig stationConfig(StationConfigRef ref) {
   throw UnimplementedError(

@@ -1,0 +1,9 @@
+query StationDetectionCount($stationId: ID!, $period: InputDuration) {
+  station(id: $stationId) {
+    counts(period: $period) {
+      detections
+      __typename
+    }
+    __typename
+  }
+}
