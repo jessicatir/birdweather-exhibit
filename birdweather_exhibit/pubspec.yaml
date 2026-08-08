@@ -80,6 +80,8 @@ flutter:
   assets:
     - assets/images/pullman/
     - assets/images/wsu/
+    # Full-screen image shown when the default station has no detections.
+    - assets/images/no_detections.png
     - assets/potential_local_species_descriptions.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
