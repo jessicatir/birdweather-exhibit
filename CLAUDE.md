@@ -56,9 +56,18 @@ public museum-style exhibit.
 - Build with the Pages base href, then push `build/web` to that repo's `deploy`
   branch (see the `deploy` target in `birdweather_exhibit/Makefile`):
   `flutter build web --base-href "/birdweather-exhibit-pages/" --release`
-- **After deploying, the Fire Stick will keep showing the old build until
-  AbleSign's service-worker cache is cleared** (clear its cache or re-add the
-  URL). Many "the fix didn't work" reports are just stale cache.
+- **The build ships no service worker, on purpose.** `web/index.html` does not
+  register one and the deploy passes `--pwa-strategy=none`. Flutter's worker
+  serves its own cached `index.html`, which points back at the *old* worker
+  URL, so the browser never learns a new build exists — the exhibit pinned
+  whichever build it first loaded until someone cleared the cache on the device
+  by hand. That was the cause of most historical "the deploy didn't work"
+  reports. Do not re-add the worker; deploys now land on the next page load.
+  (Offline resilience does not depend on it — API responses are cached in Hive.)
+- **Set AbleSign's page-refresh interval to "never".** The exhibit is built to
+  run continuously: it polls detections every 30s and rotates stations every 7
+  minutes. A periodic reload means it never survives long enough to rotate, and
+  re-downloads the whole bundle each time.
 
 ## Debugging WebView display issues
 

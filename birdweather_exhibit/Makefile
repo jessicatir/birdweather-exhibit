@@ -15,7 +15,13 @@ deploy:
 	@echo "Getting packages..."
 	fvm flutter pub get
 	@echo "Building for web..."
-	flutter build web --base-href $(BASE_HREF) --release
+#	--pwa-strategy=none disables the generated service worker. With it enabled
+#	the worker serves its cached index.html, which points back at the *old*
+#	worker URL, so the browser never notices a new deploy: the exhibit pins the
+#	build it first saw until someone manually clears the cache on the device.
+#	The exhibit has no offline requirement from the worker (API data is cached
+#	separately in Hive), so dropping it makes deploys land on the next load.
+	fvm flutter build web --base-href $(BASE_HREF) --release --pwa-strategy=none
 	@echo "Deploying to git repository"
 	cd build/web && \
 	git init && \

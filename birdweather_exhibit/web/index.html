@@ -63,10 +63,18 @@
   <title>birdweather_exhibit</title>
   <link rel="manifest" href="manifest.json">
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
+  <!--
+    No service worker is registered, and the build passes --pwa-strategy=none
+    so none is generated. This is deliberate: the Flutter service worker serves
+    its cached index.html, which points back at the *old* worker URL, so the
+    browser never learns a new build exists. The exhibit would pin whichever
+    build it first loaded until someone cleared the cache on the device by hand
+    — the cause of most "the deploy didn't work" reports. Without a worker,
+    a deploy lands on the next page load.
+
+    Offline resilience does not depend on this: API responses are cached
+    separately in Hive (see lib/offline/hive_graphql_cache.dart).
+  -->
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
@@ -75,9 +83,6 @@
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
             appRunner.runApp();
