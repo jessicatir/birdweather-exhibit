@@ -29,6 +29,20 @@ class _LocationDataLoadedWidget extends ConsumerWidget {
 
   const _LocationDataLoadedWidget({required this.data});
 
+  // ---- Edit the wording here -------------------------------------------
+  /// Footnote under the readings.
+  ///
+  /// The sensor is on the listening station itself, in the open, so it runs
+  /// warm: measured against Pullman's actual conditions it read ~14 °F high
+  /// (96.5 °F vs 82.3 °F on a sunny afternoon). Without this note visitors
+  /// read it as the air temperature and reasonably conclude the exhibit is
+  /// broken.
+  static const String _sensorNote =
+      "These readings come from a sensor on the listening station itself. "
+      "On sunny days, the station's temperature may read warmer than the air "
+      "around it.";
+  // ----------------------------------------------------------------------
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = data.value;
@@ -86,6 +100,20 @@ class _LocationDataLoadedWidget extends ConsumerWidget {
               if (aqi != null) ...[
                 const SizedBox(height: 12),
                 _AqiDataItem(aqi: aqi),
+              ],
+              // Only worth explaining when there is a reading on screen to
+              // explain.
+              if (temperature != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  _sensorNote,
+                  style: TextStyle(
+                    fontSize: 13,
+                    height: 1.3,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
+                ),
               ],
             ],
           ),

@@ -7,7 +7,7 @@ part of 'bird_weather_service.dart';
 // **************************************************************************
 
 String _$birdWeatherServiceHash() =>
-    r'b4a21a346e9819ac57080103c65af98112485b43';
+    r'49d63bbd55bb6d33137de9ff31b0aa274be6576c';
 
 /// See also [birdWeatherService].
 @ProviderFor(birdWeatherService)
@@ -18,8 +18,11 @@ final birdWeatherServiceProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$birdWeatherServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[stationConfigProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    stationConfigProvider,
+    ...?stationConfigProvider.allTransitiveDependencies
+  },
 );
 
 typedef BirdWeatherServiceRef = AutoDisposeProviderRef<BirdWeatherService>;

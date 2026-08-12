@@ -7,7 +7,9 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "top_species_notifier.g.dart";
 
-@Riverpod(keepAlive: true)
+// Scoped per station via its dependency on birdWeatherService (which depends on
+// the per-station stationConfig), so each station keeps its own top-species data.
+@Riverpod(keepAlive: true, dependencies: [birdWeatherService])
 class TopSpeciesNotifier extends _$TopSpeciesNotifier {
   Timer? _timer;
 

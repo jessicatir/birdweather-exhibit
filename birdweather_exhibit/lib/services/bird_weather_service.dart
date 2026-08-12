@@ -13,10 +13,22 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "bird_weather_service.g.dart";
 
-/// Simple provider to track if last data came from cache
-final lastDataFromCacheProvider = StateProvider<bool>((ref) => false);
+/// Simple provider to track if last data came from cache.
+///
+/// [dependencies] is what scopes this per station. Without it the provider
+/// mounts on the root container, so every station's [BirdWeatherService] writes
+/// to one shared flag — and a station serving cached data would clear the flag
+/// the moment another station's fetch succeeded, showing "Live" over stale data.
+/// Declaring the dependency mounts it in each station's `ProviderScope` instead,
+/// the same mechanism the rest of this file relies on.
+final lastDataFromCacheProvider = StateProvider<bool>(
+  (ref) => false,
+  dependencies: [stationConfigProvider],
+);
 
-@riverpod
+// Scoped per station: depends on the (overridden-per-station) stationConfig, so
+// each station's ProviderScope gets its own service instance.
+@Riverpod(dependencies: [stationConfig])
 BirdWeatherService birdWeatherService(BirdWeatherServiceRef ref) {
   return BirdWeatherService(ref);
 }

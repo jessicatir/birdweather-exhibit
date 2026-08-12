@@ -7,7 +7,7 @@ part of 'top_species_notifier.dart';
 // **************************************************************************
 
 String _$topSpeciesNotifierHash() =>
-    r'c3ed539bb0c976000957c7bccbe6ec0840c62dc0';
+    r'22830e844f1cfd352b0b885d6de43501f885d4dd';
 
 /// See also [TopSpeciesNotifier].
 @ProviderFor(TopSpeciesNotifier)
@@ -18,8 +18,11 @@ final topSpeciesNotifierProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$topSpeciesNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[birdWeatherServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    birdWeatherServiceProvider,
+    ...?birdWeatherServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$TopSpeciesNotifier = AsyncNotifier<TopSpeciesState>;

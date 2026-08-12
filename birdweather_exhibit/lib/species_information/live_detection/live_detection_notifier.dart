@@ -10,7 +10,9 @@ import "package:riverpod_annotation/riverpod_annotation.dart";
 
 part "live_detection_notifier.g.dart";
 
-@Riverpod(keepAlive: true)
+// Scoped per station via its dependency on birdWeatherService (which depends on
+// the per-station stationConfig), so each station keeps its own recent detections.
+@Riverpod(keepAlive: true, dependencies: [birdWeatherService])
 class LiveDetectionNotifier extends _$LiveDetectionNotifier {
   Timer? _timer;
   List<DetectionWithStatus> _localDetectionList = [];

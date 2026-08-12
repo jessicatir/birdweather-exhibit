@@ -7,7 +7,7 @@ part of 'live_detection_notifier.dart';
 // **************************************************************************
 
 String _$liveDetectionNotifierHash() =>
-    r'4be22594daabc8b19a9a77a386972e68d09fcf56';
+    r'e86364f8b99798da6963d0d30aaa66f2a59ef9fd';
 
 /// See also [LiveDetectionNotifier].
 @ProviderFor(LiveDetectionNotifier)
@@ -18,8 +18,11 @@ final liveDetectionNotifierProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$liveDetectionNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[birdWeatherServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    birdWeatherServiceProvider,
+    ...?birdWeatherServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$LiveDetectionNotifier = AsyncNotifier<LiveDetectionState>;
