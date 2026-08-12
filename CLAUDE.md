@@ -80,7 +80,15 @@ This is a public, museum-style exhibit, so wording should be approachable:
 - **Name the location concretely** ("a neighborhood in Pullman, WA") rather than
   vague phrasing.
 - Public-facing copy lives in
-  `birdweather_exhibit/lib/species_information/components/exhibit_info_card.dart`.
+  `birdweather_exhibit/lib/species_information/components/exhibit_info_card.dart`,
+  plus the sensor footnote in
+  `birdweather_exhibit/lib/species_information/location_data/location_data.dart`.
+  Both mark the editable strings with an `---- Edit the wording here ----`
+  comment block.
+- **The conditions panel reports the station's own sensor, not the weather.**
+  The PUC sits in the open and runs hot — measured ~14 °F above Pullman's
+  actual shade temperature on a sunny afternoon. That is expected, not a bug;
+  a footnote under the readings says so. Don't "fix" the reading.
 
 ## Repo housekeeping
 
