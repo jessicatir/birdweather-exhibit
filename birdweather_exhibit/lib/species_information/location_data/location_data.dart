@@ -39,7 +39,8 @@ class _LocationDataLoadedWidget extends ConsumerWidget {
   /// broken.
   static const String _sensorNote =
       "These readings come from a sensor on the listening station itself. "
-      "It sits in the sun, so the temperature often reads warmer than the shade.";
+      "On sunny days, the station's temperature may read warmer than the air "
+      "around it.";
   // ----------------------------------------------------------------------
 
   @override
